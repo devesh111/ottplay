@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ContentCard } from '@/components/content/ContentCard'
 import { apiClient } from '@/lib/api/client'
 import {
   Carousel,
@@ -12,7 +13,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
-import { Play, Plus } from 'lucide-react'
 
 interface Movie {
   id: string
@@ -100,67 +100,20 @@ export default function Home() {
       featuredMovies: 'Featured Movies',
       featuredShows: 'Featured Shows',
       viewAll: 'View All',
-      play: 'Play',
-      addToWatchlist: 'Add to Watchlist',
-      rating: 'Rating',
-      year: 'Year',
+      noMovies: 'No movies available',
+      noShows: 'No shows available',
     },
     ar: {
       welcome: 'مرحبا بك في منصة OTT',
       featuredMovies: 'الأفلام المميزة',
       featuredShows: 'المسلسلات المميزة',
       viewAll: 'عرض الكل',
-      play: 'تشغيل',
-      addToWatchlist: 'إضافة إلى قائمة المشاهدة',
-      rating: 'التقييم',
-      year: 'السنة',
+      noMovies: 'لا توجد أفلام متاحة',
+      noShows: 'لا توجد مسلسلات متاحة',
     },
   }
 
   const t = translations[language]
-
-  const ContentCard = ({ item, type }: { item: Movie | Show; type: 'movie' | 'show' }) => {
-    const title = language === 'en' ? item.title : item.titleAr
-    const description = language === 'en' ? item.description : item.descriptionAr
-
-    return (
-      <Link href={`/content/${type}/${item.id}`}>
-        <div className="relative group cursor-pointer h-80 rounded-lg overflow-hidden bg-gray-200">
-          {item.posterUrl ? (
-            <img
-              src={item.posterUrl}
-              alt={title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-300 to-gray-400">
-              <span className="text-gray-600 text-center px-4">{title}</span>
-            </div>
-          )}
-
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-            <h3 className="text-white font-bold text-lg mb-2">{title}</h3>
-            <p className="text-gray-200 text-sm mb-4 line-clamp-2">{description}</p>
-            <div className="flex gap-2">
-              <Button size="sm" className="flex-1">
-                <Play className="w-4 h-4 mr-2" />
-                {t.play}
-              </Button>
-              <Button size="sm" variant="outline">
-                <Plus className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Rating Badge */}
-          <div className="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded text-sm font-bold">
-            ⭐ {item.rating.toFixed(1)}
-          </div>
-        </div>
-      </Link>
-    )
-  }
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -198,7 +151,17 @@ export default function Home() {
             <CarouselContent className="-ml-2 md:-ml-4">
               {movies.map((movie) => (
                 <CarouselItem key={movie.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/5">
-                  <ContentCard item={movie} type="movie" />
+                  <ContentCard
+                    id={movie.id}
+                    title={movie.title}
+                    titleAr={movie.titleAr}
+                    description={movie.description}
+                    descriptionAr={movie.descriptionAr}
+                    posterUrl={movie.posterUrl}
+                    rating={movie.rating}
+                    type="movie"
+                    language={language}
+                  />
                 </CarouselItem>
               ))}
             </CarouselContent>
@@ -206,9 +169,7 @@ export default function Home() {
             <CarouselNext />
           </Carousel>
         ) : (
-          <div className="text-center py-8 text-gray-500">
-            {language === 'en' ? 'No movies available' : 'لا توجد أفلام متاحة'}
-          </div>
+          <div className="text-center py-8 text-gray-500">{t.noMovies}</div>
         )}
       </section>
 
@@ -234,7 +195,17 @@ export default function Home() {
             <CarouselContent className="-ml-2 md:-ml-4">
               {shows.map((show) => (
                 <CarouselItem key={show.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/5">
-                  <ContentCard item={show} type="show" />
+                  <ContentCard
+                    id={show.id}
+                    title={show.title}
+                    titleAr={show.titleAr}
+                    description={show.description}
+                    descriptionAr={show.descriptionAr}
+                    posterUrl={show.posterUrl}
+                    rating={show.rating}
+                    type="show"
+                    language={language}
+                  />
                 </CarouselItem>
               ))}
             </CarouselContent>
@@ -242,9 +213,7 @@ export default function Home() {
             <CarouselNext />
           </Carousel>
         ) : (
-          <div className="text-center py-8 text-gray-500">
-            {language === 'en' ? 'No shows available' : 'لا توجد مسلسلات متاحة'}
-          </div>
+          <div className="text-center py-8 text-gray-500">{t.noShows}</div>
         )}
       </section>
     </main>

@@ -2,14 +2,31 @@
 
 import { useEffect, useState } from 'react'
 import { apiClient } from '@/lib/api/client'
-import { ShowCard } from '@/components/content/ShowCard'
+import { ContentCard } from '@/components/content/ContentCard'
 import { Button } from '@/components/ui/button'
 
+interface Show {
+  id: string
+  title: string
+  titleAr: string
+  description: string
+  descriptionAr: string
+  posterUrl?: string
+  rating: number
+  releaseYear: number
+}
+
 export default function ShowsPage() {
-  const [shows, setShows] = useState<any[]>([])
+  const [language, setLanguage] = useState<'en' | 'ar'>('en')
+  const [shows, setShows] = useState<Show[]>([])
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem('language') as 'en' | 'ar' | null
+    if (savedLang) setLanguage(savedLang)
+  }, [])
 
   useEffect(() => {
     const fetchShows = async () => {
@@ -35,19 +52,30 @@ export default function ShowsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-8">TV Shows</h1>
+      <h1 className="text-4xl font-bold mb-8">{language === 'en' ? 'TV Shows' : 'المسلسلات'}</h1>
 
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {[...Array(8)].map((_, i) => (
-            <div key={i} className="h-64 bg-gray-200 rounded-lg animate-pulse" />
+            <div key={i} className="h-80 bg-gray-200 rounded-lg animate-pulse" />
           ))}
         </div>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {shows.map((show) => (
-              <ShowCard key={show.id} show={show} />
+              <ContentCard
+                key={show.id}
+                id={show.id}
+                title={show.title}
+                titleAr={show.titleAr}
+                description={show.description}
+                descriptionAr={show.descriptionAr}
+                posterUrl={show.posterUrl}
+                rating={show.rating}
+                type="show"
+                language={language}
+              />
             ))}
           </div>
 
@@ -56,16 +84,16 @@ export default function ShowsPage() {
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
             >
-              Previous
+              {language === 'en' ? 'Previous' : 'السابق'}
             </Button>
             <span className="flex items-center">
-              Page {page} of {Math.ceil(total / 20)}
+              {language === 'en' ? `Page ${page} of ${Math.ceil(total / 20)}` : `الصفحة ${page} من ${Math.ceil(total / 20)}`}
             </span>
             <Button
               onClick={() => setPage(p => p + 1)}
               disabled={page >= Math.ceil(total / 20)}
             >
-              Next
+              {language === 'en' ? 'Next' : 'التالي'}
             </Button>
           </div>
         </>
