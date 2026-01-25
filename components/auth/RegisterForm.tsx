@@ -38,16 +38,16 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     setLoading(true)
 
     try {
-      const response = await apiClient.post('/auth/register', {
+      const data = await apiClient.post('/auth/register', {
         name,
         email,
         password,
         phone,
       })
 
-      if (response.data.token) {
-        localStorage.setItem('authToken', response.data.token)
-        localStorage.setItem('user', JSON.stringify(response.data.user))
+      if (data.token) {
+        localStorage.setItem('authToken', data.token)
+        localStorage.setItem('user', JSON.stringify(data.user))
         onSuccess?.()
         router.refresh()
       }

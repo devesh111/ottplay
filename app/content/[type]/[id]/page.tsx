@@ -53,10 +53,10 @@ export default function ContentDetailPage() {
       try {
         setLoading(true)
         const endpoint = type === 'movie' ? '/content/movies' : '/content/shows'
-        const response = await apiClient.get(`${endpoint}/${id}`, {
+        const data = await apiClient.get(`${endpoint}/${id}`, {
           params: { lang: language },
         })
-        setContent(response.data.data)
+        setContent(data.data)
       } catch (err: any) {
         setError(err.response?.data?.message || 'Failed to load content')
       } finally {
