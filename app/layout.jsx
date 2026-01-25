@@ -3,6 +3,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Providers } from "@/components/layout/Providers";
+import { AppProvider } from "@/contexts/AppContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,6 +36,14 @@ export const metadata = {
     },
 };
 
+/**
+ * Root layout component for the entire application
+ * Wraps the app with theme provider and global app context
+ * 
+ * @param {Object} props - Component props
+ * @param {React.ReactNode} props.children - Child components
+ * @returns {JSX.Element} Root layout
+ */
 export default function RootLayout({ children }) {
     return (
         <html lang="en">
@@ -45,11 +54,13 @@ export default function RootLayout({ children }) {
                     enableSystem
                     disableTransitionOnChange
                 >
-                    <div className="flex flex-col min-h-screen">
-                        <Header />
-                        <main className="flex-1">{children}</main>
-                        <Footer />
-                    </div>
+                    <AppProvider>
+                        <div className="flex flex-col min-h-screen">
+                            <Header />
+                            <main className="flex-1">{children}</main>
+                            <Footer />
+                        </div>
+                    </AppProvider>
                 </Providers>
             </body>
         </html>

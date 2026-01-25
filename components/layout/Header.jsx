@@ -15,45 +15,71 @@ import {
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { RegisterForm } from "@/components/auth/RegisterForm";
+import { useApp } from "@/contexts/AppContext";
 
+/**
+ * Header component - Main navigation header for the application
+ * Displays logo, navigation links, search bar, language switcher, and auth buttons
+ * Supports both desktop and mobile responsive layouts
+ * 
+ * Features:
+ * - Responsive navigation (desktop and mobile)
+ * - Search functionality
+ * - Language switching (English, Arabic)
+ * - Authentication dialogs (Login/Register)
+ * - User profile and watchlist links
+ * - Logout functionality
+ * 
+ * @returns {JSX.Element} Header component
+ */
 export function Header() {
     const [isOpen, setIsOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [language, setLanguage] = useState("en");
     const [loginOpen, setLoginOpen] = useState(false);
     const [registerOpen, setRegisterOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
     const router = useRouter();
+    const { isAuthenticated, language, changeLanguage, logout } = useApp();
 
-    useEffect(() => {
-        const token = localStorage.getItem("authToken");
-        setIsLoggedIn(!!token);
-        const savedLang = localStorage.getItem("language");
-        if (savedLang) setLanguage(savedLang);
-    }, []);
-
+    /**
+     * Handle search form submission
+     * Navigates to search page with query and language parameters
+     * 
+     * @param {Event} e - Form submission event
+     */
     const handleSearch = (e) => {
         e.preventDefault();
         if (searchQuery.trim()) {
             router.push(
                 `/search?q=${encodeURIComponent(searchQuery)}&lang=${language}`,
             );
+            setSearchQuery("");
         }
     };
 
+    /**
+     * Handle language change
+     * Updates language in global context and localStorage
+     * 
+     * @param {string} lang - Language code (e.g., 'en', 'ar')
+     */
     const handleLanguageChange = (lang) => {
-        setLanguage(lang);
-        localStorage.setItem("language", lang);
+        changeLanguage(lang);
         window.location.reload();
     };
 
+    /**
+     * Handle user logout
+     * Clears authentication state and redirects to home
+     */
     const handleLogout = () => {
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("user");
-        setIsLoggedIn(false);
+        logout();
         router.push("/");
     };
 
+    /**
+     * Translation strings for different languages
+     * @type {Object}
+     */
     const translations = {
         en: {
             movies: "Movies",
@@ -81,7 +107,7 @@ export function Header() {
         },
     };
 
-    const t = translations[language];
+    const t = translations[language] || translations.en;
 
     return (
         <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -166,7 +192,7 @@ export function Header() {
 
                     {/* Auth Buttons */}
                     <div className="hidden md:flex items-center space-x-4">
-                        {isLoggedIn ? (
+                        {isAuthenticated ? (
                             <>
                                 <Link href="/watchlist">
                                     <Button variant="outline">
@@ -200,7 +226,6 @@ export function Header() {
                                         <LoginForm
                                             onSuccess={() => {
                                                 setLoginOpen(false);
-                                                setIsLoggedIn(true);
                                             }}
                                         />
                                     </DialogContent>
@@ -258,7 +283,7 @@ export function Header() {
                         >
                             {t.liveTV}
                         </Link>
-                        {isLoggedIn ? (
+                        {isAuthenticated ? (
                             <>
                                 <Link
                                     href="/watchlist"
@@ -297,7 +322,6 @@ export function Header() {
                                         <LoginForm
                                             onSuccess={() => {
                                                 setLoginOpen(false);
-                                                setIsLoggedIn(true);
                                             }}
                                         />
                                     </DialogContent>
