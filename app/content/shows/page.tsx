@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { contentApi } from '@/lib/api/client'
+import { apiClient } from '@/lib/api/client'
 import { ShowCard } from '@/components/content/ShowCard'
 import { Button } from '@/components/ui/button'
 
@@ -15,9 +15,14 @@ export default function ShowsPage() {
     const fetchShows = async () => {
       try {
         setLoading(true)
-        const res = await contentApi.getShows(page, 20)
-        setShows(res.data)
-        setTotal(res.pagination.total)
+        const response = await apiClient.get('/content/shows', {
+          params: {
+            page,
+            limit: 20,
+          },
+        })
+        setShows(response.data.data || [])
+        setTotal(response.data.pagination?.total || 0)
       } catch (error) {
         console.error('Error fetching shows:', error)
       } finally {

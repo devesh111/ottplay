@@ -55,13 +55,13 @@ export default function Home() {
     const fetchMovies = async () => {
       try {
         setMoviesLoading(true)
-        const data = await apiClient.get('/content/movies', {
+        const response = await apiClient.get('/content/movies', {
           params: {
             limit: 10,
             lang: language,
           },
         })
-        setMovies(data.data || [])
+        setMovies(response.data.data || [])
       } catch (err: any) {
         setMoviesError(err.response?.data?.message || 'Failed to load movies')
       } finally {
@@ -77,13 +77,13 @@ export default function Home() {
     const fetchShows = async () => {
       try {
         setShowsLoading(true)
-        const data = await apiClient.get('/content/shows', {
+        const response = await apiClient.get('/content/shows', {
           params: {
             limit: 10,
             lang: language,
           },
         })
-        setShows(data.data || [])
+        setShows(response.data.data || [])
       } catch (err: any) {
         setShowsError(err.response?.data?.message || 'Failed to load shows')
       } finally {

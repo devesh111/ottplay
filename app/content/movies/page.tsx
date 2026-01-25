@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { contentApi } from '@/lib/api/client'
+import { apiClient } from '@/lib/api/client'
 import { MovieCard } from '@/components/content/MovieCard'
 import { Button } from '@/components/ui/button'
 
@@ -15,9 +15,14 @@ export default function MoviesPage() {
     const fetchMovies = async () => {
       try {
         setLoading(true)
-        const res = await contentApi.getMovies(page, 20)
-        setMovies(res.data)
-        setTotal(res.pagination.total)
+        const response = await apiClient.get('/content/movies', {
+          params: {
+            page,
+            limit: 20,
+          },
+        })
+        setMovies(response.data.data || [])
+        setTotal(response.data.pagination?.total || 0)
       } catch (error) {
         console.error('Error fetching movies:', error)
       } finally {

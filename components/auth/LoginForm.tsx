@@ -29,14 +29,14 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     setError('')
 
     try {
-      const data = await apiClient.post('/auth/login', {
+      const response = await apiClient.post('/auth/login', {
         email,
         password,
       })
 
-      if (data.token) {
-        localStorage.setItem('authToken', data.token)
-        localStorage.setItem('user', JSON.stringify(data.user))
+      if (response.data.token) {
+        localStorage.setItem('authToken', response.data.token)
+        localStorage.setItem('user', JSON.stringify(response.data.user))
         onSuccess?.()
         router.refresh()
       }
@@ -70,14 +70,14 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     setError('')
 
     try {
-      const data = await apiClient.post('/auth/verify-otp', {
+      const response = await apiClient.post('/auth/verify-otp', {
         phone,
         otp,
       })
 
-      if (data.token) {
-        localStorage.setItem('authToken', data.token)
-        localStorage.setItem('user', JSON.stringify(data.user))
+      if (response.data.token) {
+        localStorage.setItem('authToken', response.data.token)
+        localStorage.setItem('user', JSON.stringify(response.data.user))
         onSuccess?.()
         router.refresh()
       }
