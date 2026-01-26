@@ -1,68 +1,48 @@
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { Providers } from "@/components/layout/Providers";
-import { AppProvider } from "@/contexts/AppContext";
+import { Geist, Geist_Mono } from 'next/font/google';
+import { AppProvider } from '@/contexts/AppContext';
+import Header from '@/components/layout/Header';
+import './globals.css';
 
-const inter = Inter({ subsets: ["latin"] });
+const geistSans = Geist({
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
+});
 
-export const metadata = {
-    title: "OTT Platform - Stream Your Favorite Content",
-    description:
-        "Discover and stream movies, shows, and live TV from all your favorite platforms in one place",
-    openGraph: {
-        type: "website",
-        locale: "en_US",
-        url: "https://ott-platform.com",
-        siteName: "OTT Platform",
-        title: "OTT Platform - Stream Your Favorite Content",
-        description:
-            "Discover and stream movies, shows, and live TV from all your favorite platforms",
-        images: [
-            {
-                url: "/og-image.png",
-                width: 1200,
-                height: 630,
-                alt: "OTT Platform",
-            },
-        ],
-    },
-    twitter: {
-        card: "summary_large_image",
-        title: "OTT Platform",
-        description: "Stream your favorite content",
-        images: ["/og-image.png"],
-    },
-};
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
+});
 
 /**
- * Root layout component for the entire application
- * Wraps the app with theme provider and global app context
+ * Root Layout Component
  * 
+ * Main layout wrapper that:
+ * - Provides global app context (auth, language, theme)
+ * - Renders header navigation
+ * - Sets up dark theme by default
+ * - Manages font variables
+ * 
+ * @component
  * @param {Object} props - Component props
- * @param {React.ReactNode} props.children - Child components
- * @returns {JSX.Element} Root layout
+ * @param {React.ReactNode} props.children - Page content
+ * @returns {JSX.Element} The root layout
  */
+export const metadata = {
+  title: 'OTTPlay - Stream Movies & TV Shows',
+  description: 'Watch unlimited movies and TV shows in stunning quality',
+};
+
 export default function RootLayout({ children }) {
-    return (
-        <html lang="en">
-            <body className={inter.className}>
-                <Providers
-                    attribute="class"
-                    defaultTheme="light"
-                    enableSystem
-                    disableTransitionOnChange
-                >
-                    <AppProvider>
-                        <div className="flex flex-col min-h-screen">
-                            <Header />
-                            <main className="flex-1">{children}</main>
-                            <Footer />
-                        </div>
-                    </AppProvider>
-                </Providers>
-            </body>
-        </html>
-    );
+  return (
+    <html lang="en" className="dark">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0f0f1e] text-[#e5e5ff]`}
+      >
+        <AppProvider>
+          <Header />
+          {children}
+        </AppProvider>
+      </body>
+    </html>
+  );
 }
