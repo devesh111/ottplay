@@ -46,7 +46,7 @@ export default function ShowsPage() {
             </h1>
 
             {loading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                     {[...Array(8)].map((_, i) => (
                         <div
                             key={i}
@@ -56,7 +56,7 @@ export default function ShowsPage() {
                 </div>
             ) : (
                 <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
                         {shows.map((show) => (
                             <ContentCard
                                 key={show.id}
@@ -66,6 +66,7 @@ export default function ShowsPage() {
                                 description={show.description}
                                 descriptionAr={show.descriptionAr}
                                 posterUrl={show.posterUrl}
+                                thumbnailUrl={movie.thumbnailUrl}
                                 rating={show.rating}
                                 type="show"
                                 language={language}

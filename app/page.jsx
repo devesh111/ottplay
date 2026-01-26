@@ -121,7 +121,7 @@ export default function Home() {
             </section>
 
             {/* Featured Movies Section */}
-            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 overflow-x-hidden">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-3xl font-bold">{t.featuredMovies}</h2>
                     <Link href="/content/movies">
@@ -154,6 +154,7 @@ export default function Home() {
                                         description={movie.description}
                                         descriptionAr={movie.descriptionAr}
                                         posterUrl={movie.posterUrl}
+                                        thumbnailUrl={movie.thumbnailUrl}
                                         rating={movie.rating}
                                         type="movie"
                                         language={language}
@@ -172,7 +173,7 @@ export default function Home() {
             </section>
 
             {/* Featured Shows Section */}
-            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 overflow-x-hidden">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-3xl font-bold">{t.featuredShows}</h2>
                     <Link href="/content/shows">
@@ -205,6 +206,7 @@ export default function Home() {
                                         description={show.description}
                                         descriptionAr={show.descriptionAr}
                                         posterUrl={show.posterUrl}
+                                        thumbnailUrl={show.thumbnailUrl}
                                         rating={show.rating}
                                         type="show"
                                         language={language}

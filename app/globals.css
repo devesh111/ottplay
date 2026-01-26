@@ -135,3 +135,6 @@ nextjs-portal {
 button {
     cursor: pointer;
 }
+body {
+    overflow-x: hidden;
+}

@@ -46,7 +46,7 @@ export default function MoviesPage() {
             </h1>
 
             {loading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                     {[...Array(8)].map((_, i) => (
                         <div
                             key={i}
@@ -56,7 +56,7 @@ export default function MoviesPage() {
                 </div>
             ) : (
                 <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
                         {movies.map((movie) => (
                             <ContentCard
                                 key={movie.id}
@@ -66,6 +66,7 @@ export default function MoviesPage() {
                                 description={movie.description}
                                 descriptionAr={movie.descriptionAr}
                                 posterUrl={movie.posterUrl}
+                                thumbnailUrl={movie.thumbnailUrl}
                                 rating={movie.rating}
                                 type="movie"
                                 language={language}
