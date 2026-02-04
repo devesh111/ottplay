@@ -15,23 +15,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { fetchWidgetList } from '@/lib/api/ottplay';
-import { FeaturedCarousel } from '@/components/home/FeaturedCarousel';
-import { Footer } from '@/components/layout/Footer';
-import { Skeleton } from '@/components/ui/skeleton';
-
-/**
- * Interface for widget data from API
- */
-interface Widget {
-  id: string;
-  name: string;
-  title: string;
-  description?: string;
-  type: string;
-  endpoint?: string;
-  position?: number;
-}
+import { fetchWidgetList } from '@/lib/api/ottplay.js';
+import { FeaturedCarousel } from '@/components/home/FeaturedCarousel.jsx';
+import { Footer } from '@/components/layout/Footer.jsx';
+import { Skeleton } from '@/components/ui/skeleton.js';
 
 /**
  * Home Page Component
@@ -39,9 +26,9 @@ interface Widget {
  */
 export default function Home() {
   const [language, setLanguage] = useState('en');
-  const [widgets, setWidgets] = useState<Widget[]>([]);
+  const [widgets, setWidgets] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   /**
    * Load language preference from localStorage on mount
@@ -69,14 +56,14 @@ export default function Home() {
         
         // Sort widgets by position if available
         const sortedWidgets = widgetList.sort(
-          (a: Widget, b: Widget) => (a.position || 0) - (b.position || 0)
+          (a, b) => (a.position || 0) - (b.position || 0)
         );
         
         setWidgets(sortedWidgets);
       } catch (err) {
         console.error('Failed to load widgets:', err);
         setError('Failed to load page sections');
-        // Set mock widgets for development/fallback
+        // Set mock data for development/fallback
         setMockWidgets();
       } finally {
         setLoading(false);
@@ -91,7 +78,7 @@ export default function Home() {
    * Provides placeholder sections when API is unavailable
    */
   const setMockWidgets = () => {
-    const mockData: Widget[] = [
+    const mockData = [
       {
         id: 'featured-carousel',
         name: 'Featured Carousel',
@@ -135,7 +122,7 @@ export default function Home() {
     },
   };
 
-  const t = translations[language as keyof typeof translations] || translations.en;
+  const t = translations[language] || translations.en;
 
   /**
    * Render loading state

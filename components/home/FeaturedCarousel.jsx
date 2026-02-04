@@ -21,28 +21,13 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 /**
- * Interface for carousel item data from API
- */
-interface CarouselItemData {
-  id: string;
-  title: string;
-  description?: string;
-  posterUrl?: string;
-  thumbnailUrl?: string;
-  rating?: number;
-  type?: string;
-  year?: number;
-  duration?: string;
-}
-
-/**
  * FeaturedCarousel Component
  * Fetches and displays featured content in a carousel format
  */
 export function FeaturedCarousel() {
-  const [items, setItems] = useState<CarouselItemData[]>([]);
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   /**
    * Fetch carousel items on component mount
@@ -84,7 +69,7 @@ export function FeaturedCarousel() {
    * Provides placeholder data when API is unavailable
    */
   const setMockItems = () => {
-    const mockData: CarouselItemData[] = Array.from({ length: 10 }, (_, i) => ({
+    const mockData = Array.from({ length: 10 }, (_, i) => ({
       id: `featured-${i}`,
       title: `Featured Content ${i + 1}`,
       description: 'An amazing piece of content you should watch',
