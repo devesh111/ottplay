@@ -15,10 +15,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { fetchWidgetList } from '@/lib/api/ottplay.js';
-import { FeaturedCarousel } from '@/components/home/FeaturedCarousel.jsx';
-import { Footer } from '@/components/layout/Footer.jsx';
-import { Skeleton } from '@/components/ui/skeleton.js';
+import { fetchWidgetList } from '@/lib/api/ottplay';
+import { FeaturedCarousel } from '@/components/home/FeaturedCarousel';
+import { Footer } from '@/components/layout/Footer';
+import { Skeleton } from '@/components/ui/skeleton';
 
 /**
  * Home Page Component
