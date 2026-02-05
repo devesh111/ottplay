@@ -5,7 +5,7 @@
  * - 3 slides visible on desktop, 1 on mobile
  * - Autoplay functionality
  * - Bullet point navigation (no thumbnail images)
- * - Next/Previous arrow buttons
+ * - Always visible next/previous arrow buttons
  */
 
 "use client";
@@ -17,8 +17,6 @@ import {
     Carousel,
     CarouselContent,
     CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
 } from "@/components/ui/carousel";
 import Skeleton from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
@@ -217,80 +215,82 @@ export function FeaturedCarousel() {
     }
 
     /**
-     * Render carousel with items, autoplay, bullet navigation, and arrow buttons
+     * Render carousel with items, autoplay, bullet navigation, and always-visible arrow buttons
      * 3 slides visible on desktop, 1 on mobile
      * Uses embla-carousel for smooth scrolling and navigation
      */
     return (
         <div className="w-full">
             {/* Main Carousel Container with Arrow Buttons */}
-            <div className="relative w-full group">
-                {/* Carousel */}
-                <Carousel
-                    className="w-full"
-                    setApi={setCarouselApi}
-                    opts={{
-                        align: "start",
-                        loop: true,
-                    }}
-                >
-                    <CarouselContent className="-ml-2 md:-ml-4">
-                        {items.map((item, index) => {
-                            const imageUrl = getImageUrl(item);
-                            const itemTitle = getItemTitle(item);
-
-                            return (
-                                <CarouselItem
-                                    key={item.order || index}
-                                    className="pl-2 md:pl-4 basis-full sm:basis-full md:basis-1/3"
-                                >
-                                    {/* Individual carousel item card - no padding */}
-                                    <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group h-full m-0 p-0">
-                                        {/* Image container with dynamic aspect ratio */}
-                                        <div className="relative w-full" style={{ aspectRatio: "16/9" }}>
-                                            {imageUrl ? (
-                                                <Image
-                                                    src={imageUrl}
-                                                    alt={itemTitle}
-                                                    fill
-                                                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                                    priority={index === 0}
-                                                />
-                                            ) : (
-                                                <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
-                                                    <span className="text-gray-400">
-                                                        {itemTitle}
-                                                    </span>
-                                                </div>
-                                            )}
-
-                                            {/* Overlay with title and info */}
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-                                                <h3 className="text-white font-bold text-lg line-clamp-2">
-                                                    {itemTitle}
-                                                </h3>
-                                            </div>
-                                        </div>
-                                    </Card>
-                                </CarouselItem>
-                            );
-                        })}
-                    </CarouselContent>
-                </Carousel>
-
-                {/* Previous Arrow Button - Visible on all screen sizes */}
+            <div className="relative w-full flex items-center justify-center">
+                {/* Previous Arrow Button - Always Visible */}
                 <button
                     onClick={handlePrevious}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-12 md:-translate-x-16 z-10 p-2 rounded-full bg-[#ec4899]/20 hover:bg-[#ec4899]/40 text-[#ec4899] transition-all duration-300 opacity-0 group-hover:opacity-100"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-[#ec4899]/80 hover:bg-[#ec4899] text-white transition-all duration-300"
                     aria-label="Previous slide"
                 >
                     <ChevronLeft size={24} />
                 </button>
 
-                {/* Next Arrow Button - Visible on all screen sizes */}
+                {/* Carousel - Hide scrollbar */}
+                <div className="w-full overflow-hidden">
+                    <Carousel
+                        className="w-full"
+                        setApi={setCarouselApi}
+                        opts={{
+                            align: "start",
+                            loop: true,
+                        }}
+                    >
+                        <CarouselContent className="-ml-2 md:-ml-4">
+                            {items.map((item, index) => {
+                                const imageUrl = getImageUrl(item);
+                                const itemTitle = getItemTitle(item);
+
+                                return (
+                                    <CarouselItem
+                                        key={item.order || index}
+                                        className="pl-2 md:pl-4 basis-full sm:basis-full md:basis-1/3"
+                                    >
+                                        {/* Individual carousel item card - no padding */}
+                                        <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group h-full m-0 p-0">
+                                            {/* Image container with dynamic aspect ratio */}
+                                            <div className="relative w-full" style={{ aspectRatio: "16/9" }}>
+                                                {imageUrl ? (
+                                                    <Image
+                                                        src={imageUrl}
+                                                        alt={itemTitle}
+                                                        fill
+                                                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                                        priority={index === 0}
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
+                                                        <span className="text-gray-400">
+                                                            {itemTitle}
+                                                        </span>
+                                                    </div>
+                                                )}
+
+                                                {/* Overlay with title and info */}
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                                                    <h3 className="text-white font-bold text-lg line-clamp-2">
+                                                        {itemTitle}
+                                                    </h3>
+                                                </div>
+                                            </div>
+                                        </Card>
+                                    </CarouselItem>
+                                );
+                            })}
+                        </CarouselContent>
+                    </Carousel>
+                </div>
+
+                {/* Next Arrow Button - Always Visible */}
                 <button
                     onClick={handleNext}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-12 md:translate-x-16 z-10 p-2 rounded-full bg-[#ec4899]/20 hover:bg-[#ec4899]/40 text-[#ec4899] transition-all duration-300 opacity-0 group-hover:opacity-100"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-[#ec4899]/80 hover:bg-[#ec4899] text-white transition-all duration-300"
                     aria-label="Next slide"
                 >
                     <ChevronRight size={24} />
