@@ -226,7 +226,7 @@ export default function Home() {
             {/* New Releases Section - From New Release API */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 overflow-x-hidden">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-3xl font-bold bg-gradient-to-r from-[#ec4899] to-[#a855f7] bg-clip-text text-transparent">
+                    <h2 className="text-3xl font-bold bg-linear-to-r from-[#ec4899] to-[#a855f7] bg-clip-text text-transparent">
                         {t.newReleases}
                     </h2>
                     <Link href="/content/new">
@@ -247,7 +247,7 @@ export default function Home() {
             {/* OTT Partners Section - From OTT Partners API */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 overflow-x-hidden">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-3xl font-bold bg-gradient-to-r from-[#a855f7] to-[#10b981] bg-clip-text text-transparent">
+                    <h2 className="text-3xl font-bold bg-linear-to-r from-[#a855f7] to-[#10b981] bg-clip-text text-transparent">
                         {t.ottPartners}
                     </h2>
                     <Link href="/providers">
@@ -266,7 +266,7 @@ export default function Home() {
             </section>
 
             {/* Call to Action Section */}
-            <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-[#ec4899]/10 via-[#a855f7]/10 to-[#10b981]/10 border-t border-[#2d2d44]">
+            <section className="py-16 px-4 sm:px-6 lg:px-8 bg-linear-to-r from-[#ec4899]/10 via-[#a855f7]/10 to-[#10b981]/10 border-t border-[#2d2d44]">
                 <div className="max-w-4xl mx-auto text-center">
                     <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-[#e5e5ff]">
                         {language === "en"
@@ -278,7 +278,7 @@ export default function Home() {
                             ? "Explore thousands of movies and TV shows from your favorite OTT platforms"
                             : "استكشف آلاف الأفلام والمسلسلات من منصات OTT المفضلة لديك"}
                     </p>
-                    <button className="px-8 py-4 rounded-lg bg-gradient-to-r from-[#ec4899] to-[#a855f7] text-white font-bold text-lg hover:shadow-2xl hover:shadow-[#ec4899]/50 transition-all transform hover:scale-105">
+                    <button className="px-8 py-4 rounded-lg bg-linear-to-r from-[#ec4899] to-[#a855f7] text-white font-bold text-lg hover:shadow-2xl hover:shadow-[#ec4899]/50 transition-all transform hover:scale-105">
                         {language === "en" ? "Explore Now" : "استكشف الآن"}
                     </button>
                 </div>

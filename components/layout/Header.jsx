@@ -16,12 +16,13 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { RegisterForm } from "@/components/auth/RegisterForm";
 import { useApp } from "@/contexts/AppContext";
+import Image from "next/image";
 
 /**
  * Header component - Main navigation header for the application
  * Displays logo, navigation links, search bar, language switcher, and auth buttons
  * Supports both desktop and mobile responsive layouts
- * 
+ *
  * Features:
  * - Responsive navigation (desktop and mobile)
  * - Search functionality
@@ -29,7 +30,7 @@ import { useApp } from "@/contexts/AppContext";
  * - Authentication dialogs (Login/Register)
  * - User profile and watchlist links
  * - Logout functionality
- * 
+ *
  * @returns {JSX.Element} Header component
  */
 export function Header() {
@@ -43,7 +44,7 @@ export function Header() {
     /**
      * Handle search form submission
      * Navigates to search page with query and language parameters
-     * 
+     *
      * @param {Event} e - Form submission event
      */
     const handleSearch = (e) => {
@@ -59,7 +60,7 @@ export function Header() {
     /**
      * Handle language change
      * Updates language in global context and localStorage
-     * 
+     *
      * @param {string} lang - Language code (e.g., 'en', 'ar')
      */
     const handleLanguageChange = (lang) => {
@@ -110,36 +111,37 @@ export function Header() {
     const t = translations[language] || translations.en;
 
     return (
-        <header className="bg-white shadow-sm sticky top-0 z-50">
+        <header className="bg-[#130726] shadow-sm sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
                     <Link href="/" className="flex items-center space-x-2">
-                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
-                            OTT
-                        </div>
-                        <span className="font-bold text-lg hidden sm:inline">
-                            OTT Platform
-                        </span>
+                        <Image
+                            src="https://images.ottplay.com/static/newImages/OTTplayWhiteLogo.svg"
+                            width={10}
+                            height={10}
+                            className="h-10 w-auto"
+                            alt="Ottplay"
+                        />
                     </Link>
 
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center space-x-8">
                         <Link
                             href="/content/movies"
-                            className="text-gray-700 hover:text-blue-600"
+                            className="text-gray-100 hover:text-primary"
                         >
                             {t.movies}
                         </Link>
                         <Link
                             href="/content/shows"
-                            className="text-gray-700 hover:text-blue-600"
+                            className="text-gray-100 hover:text-primary"
                         >
                             {t.shows}
                         </Link>
                         <Link
                             href="/content/live-tv"
-                            className="text-gray-700 hover:text-blue-600"
+                            className="text-gray-100 hover:text-primary"
                         >
                             {t.liveTV}
                         </Link>
@@ -168,7 +170,7 @@ export function Header() {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="flex items-center gap-2"
+                                className="flex items-center gap-2 hover:bg-[#ec4899] hover:text-white"
                             >
                                 <Globe className="w-4 h-4" />
                                 <span className="hidden sm:inline">
@@ -218,7 +220,7 @@ export function Header() {
                                     onOpenChange={setLoginOpen}
                                 >
                                     <DialogTrigger asChild>
-                                        <Button variant="outline">
+                                        <Button variant="outline" className="text-white hover:text-[#ec4899]">
                                             {t.login}
                                         </Button>
                                     </DialogTrigger>
@@ -235,7 +237,7 @@ export function Header() {
                                     onOpenChange={setRegisterOpen}
                                 >
                                     <DialogTrigger asChild>
-                                        <Button>{t.signup}</Button>
+                                        <Button className="text-white">{t.signup}</Button>
                                     </DialogTrigger>
                                     <DialogContent>
                                         <RegisterForm
@@ -248,7 +250,7 @@ export function Header() {
                                 </Dialog>
                             </>
                         )}
-                        <Button className="bg-purple-600 hover:bg-purple-700">
+                        <Button className="bg-purple-600 hover:bg-purple-700 text-white">
                             {t.subscribe}
                         </Button>
                     </div>
@@ -267,19 +269,19 @@ export function Header() {
                     <div className="md:hidden pb-4 space-y-2">
                         <Link
                             href="/content/movies"
-                            className="block py-2 text-gray-700"
+                            className="block py-2 text-gray-100 hover:text-primary"
                         >
                             {t.movies}
                         </Link>
                         <Link
                             href="/content/shows"
-                            className="block py-2 text-gray-700"
+                            className="block py-2 text-gray-100 hover:text-primary"
                         >
                             {t.shows}
                         </Link>
                         <Link
                             href="/content/live-tv"
-                            className="block py-2 text-gray-700"
+                            className="block py-2 text-gray-100 hover:text-primary"
                         >
                             {t.liveTV}
                         </Link>

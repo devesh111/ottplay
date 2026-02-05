@@ -1,9 +1,9 @@
 /**
  * OTTplay Home Page
- * 
+ *
  * This is the main landing page for the OTTplay platform.
  * It fetches widget sections from the API and dynamically renders them.
- * 
+ *
  * Key Features:
  * - Fetches widget list from OTTplay API
  * - Removes hero section as per requirements
@@ -12,230 +12,218 @@
  * - Supports multiple languages (English/Arabic)
  */
 
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { fetchWidgetList } from '@/lib/api/ottplay.js';
-import { FeaturedCarousel } from '@/components/home/FeaturedCarousel.jsx';
-import { Footer } from '@/components/layout/Footer.jsx';
-import { Skeleton } from '@/components/ui/skeleton.js';
+import { useEffect, useState } from "react";
+import { fetchWidgetList } from "@/lib/api/ottplay";
+import { FeaturedCarousel } from "@/components/home/FeaturedCarousel";
+import Footer from "@/components/layout/Footer";
+import Skeleton from "@/components/ui/skeleton";
 
 /**
  * Home Page Component
  * Main landing page that displays all widget sections
  */
-export default function Home() {
-  const [language, setLanguage] = useState('en');
-  const [widgets, setWidgets] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  /**
-   * Load language preference from localStorage on mount
-   */
-  useEffect(() => {
-    const savedLang = localStorage.getItem('language');
-    if (savedLang) setLanguage(savedLang);
-  }, []);
+import React from "react";
 
-  /**
-   * Fetch widget list from OTTplay API
-   * This provides all available sections for the home page
-   */
-  useEffect(() => {
-    const loadWidgets = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+const Home = () => {
+    const [language, setLanguage] = useState("en");
+    const [widgets, setWidgets] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-        // Fetch widget list from API
-        const response = await fetchWidgetList();
-        
-        // Extract widgets from response - handle different response structures
-        const widgetList = response?.data?.widgets || response?.widgets || [];
-        
-        // Sort widgets by position if available
-        const sortedWidgets = widgetList.sort(
-          (a, b) => (a.position || 0) - (b.position || 0)
-        );
-        
-        setWidgets(sortedWidgets);
-      } catch (err) {
-        console.error('Failed to load widgets:', err);
-        setError('Failed to load page sections');
-        // Set mock data for development/fallback
-        setMockWidgets();
-      } finally {
+    /**
+     * Load language preference from localStorage on mount
+     */
+    useEffect(() => {
+        const savedLang = localStorage.getItem("language");
+        if (savedLang) setLanguage(savedLang);
+    }, []);
+
+    /**
+     * Fetch widget list from OTTplay API
+     * This provides all available sections for the home page
+     */
+    useEffect(() => {
+        const loadWidgets = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                // Fetch widget list from API
+                const response = await fetchWidgetList();
+
+                // Extract widgets from response - handle different response structures
+                const widgetList = response?.result[0].active;
+                console.log(widgetList);
+                // Sort widgets by position if available
+                const sortedWidgets = widgetList.sort(
+                    (a, b) => (a.position || 0) - (b.position || 0),
+                );
+
+                setWidgets(sortedWidgets);
+            } catch (err) {
+                console.error("Failed to load widgets:", err);
+                setError("Failed to load page sections");
+                // Set mock data for development/fallback
+                setMockWidgets();
+            } finally {
+                setLoading(false);
+            }
+        };
         setLoading(false);
-      }
+        // loadWidgets();
+    }, []);
+
+    /**
+     * Set mock widgets for development/fallback
+     * Provides placeholder sections when API is unavailable
+     */
+    const setMockWidgets = () => {
+        const mockData = [
+            {
+                id: "featured-carousel",
+                name: "Featured Carousel",
+                title: "Featured Carousel",
+                type: "carousel",
+                position: 1,
+            },
+            {
+                id: "trending-now",
+                name: "Trending Now",
+                title: "Trending Now",
+                type: "carousel",
+                position: 2,
+            },
+            {
+                id: "new-releases",
+                name: "New Releases",
+                title: "New Releases",
+                type: "carousel",
+                position: 3,
+            },
+        ];
+        setWidgets(mockData);
     };
 
-    loadWidgets();
-  }, []);
+    /**
+     * Translations for UI text
+     */
+    const translations = {
+        en: {
+            welcome: "Welcome to OTTplay",
+            viewAll: "View All",
+            noContent: "No content available",
+            loading: "Loading...",
+        },
+        ar: {
+            welcome: "مرحبا بك في OTTplay",
+            viewAll: "عرض الكل",
+            noContent: "لا يوجد محتوى متاح",
+            loading: "جاري التحميل...",
+        },
+    };
 
-  /**
-   * Set mock widgets for development/fallback
-   * Provides placeholder sections when API is unavailable
-   */
-  const setMockWidgets = () => {
-    const mockData = [
-      {
-        id: 'featured-carousel',
-        name: 'Featured Carousel',
-        title: 'Featured Carousel',
-        type: 'carousel',
-        position: 1,
-      },
-      {
-        id: 'trending-now',
-        name: 'Trending Now',
-        title: 'Trending Now',
-        type: 'carousel',
-        position: 2,
-      },
-      {
-        id: 'new-releases',
-        name: 'New Releases',
-        title: 'New Releases',
-        type: 'carousel',
-        position: 3,
-      },
-    ];
-    setWidgets(mockData);
-  };
+    const t = translations[language] || translations.en;
 
-  /**
-   * Translations for UI text
-   */
-  const translations = {
-    en: {
-      welcome: 'Welcome to OTTplay',
-      viewAll: 'View All',
-      noContent: 'No content available',
-      loading: 'Loading...',
-    },
-    ar: {
-      welcome: 'مرحبا بك في OTTplay',
-      viewAll: 'عرض الكل',
-      noContent: 'لا يوجد محتوى متاح',
-      loading: 'جاري التحميل...',
-    },
-  };
-
-  const t = translations[language] || translations.en;
-
-  /**
-   * Render loading state
-   * Shows skeleton loaders while fetching widget data
-   */
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-[#0f0f1e]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="space-y-12">
-            {[...Array(3)].map((_, i) => (
-              <section key={i}>
-                <Skeleton className="h-8 w-48 mb-6" />
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                  {[...Array(5)].map((_, j) => (
-                    <Skeleton key={j} className="h-80 rounded-lg" />
-                  ))}
+    /**
+     * Render loading state
+     * Shows skeleton loaders while fetching widget data
+     */
+    if (loading) {
+        return (
+            <main className="min-h-screen bg-background">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <div className="space-y-12">
+                        {[...Array(3)].map((_, i) => (
+                            <section key={i}>
+                                <div
+                                    data-slot="skeleton"
+                                    className="bg-accent animate-pulse rounded-md h-8 w-48 mb-6"
+                                ></div>
+                                <Skeleton className="h-8 w-48 mb-6" />
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                                    {[...Array(5)].map((_, j) => (
+                                        <Skeleton
+                                            key={j}
+                                            className="h-80 rounded-lg"
+                                        />
+                                    ))}
+                                </div>
+                            </section>
+                        ))}
+                    </div>
                 </div>
-              </section>
-            ))}
-          </div>
-        </div>
-      </main>
-    );
-  }
+            </main>
+        );
+    }
 
-  /**
-   * Render error state
-   * Shows error message if widget list fetch fails
-   */
-  if (error) {
-    return (
-      <main className="min-h-screen bg-[#0f0f1e]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center">
-            <p className="text-red-500 text-lg mb-4">{error}</p>
-            <p className="text-gray-400">Please try refreshing the page</p>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  /**
-   * Render home page with widget sections
-   * Each widget is rendered as a section with its own carousel
-   */
-  return (
-    <main className="min-h-screen bg-[#0f0f1e]">
-      {/* Page header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
-        <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-[#ec4899] to-[#a855f7] bg-clip-text text-transparent">
-          {t.welcome}
-        </h1>
-        <p className="text-[#9ca3af] mt-2">
-          Discover amazing content from around the world
-        </p>
-      </div>
-
-      {/* Widget sections */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 pb-12">
-        {widgets.length === 0 ? (
-          // Empty state
-          <div className="text-center py-12">
-            <p className="text-[#9ca3af] text-lg">{t.noContent}</p>
-          </div>
-        ) : (
-          // Render each widget as a section
-          widgets.map((widget, index) => (
-            <section key={widget.id} className="overflow-x-hidden">
-              {/* Section header */}
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-3xl font-bold text-[#e5e5ff]">
-                  {widget.title}
-                </h2>
-              </div>
-
-              {/* Section content - render based on widget type */}
-              {widget.type === 'carousel' || index === 0 ? (
-                // Featured Carousel for first widget or carousel type
-                <FeaturedCarousel />
-              ) : (
-                // Placeholder for other widget types
-                <div className="text-center py-8 text-[#9ca3af]">
-                  {widget.type} section
+    /**
+     * Render error state
+     * Shows error message if widget list fetch fails
+     */
+    if (error) {
+        return (
+            <main className="min-h-screen bg-background">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <div className="text-center">
+                        <p className="text-red-500 text-lg mb-4">{error}</p>
+                        <p className="text-gray-400">
+                            Please try refreshing the page
+                        </p>
+                    </div>
                 </div>
-              )}
+            </main>
+        );
+    }
+
+    /**
+     * Render home page with widget sections
+     * Each widget is rendered as a section with its own carousel
+     */
+    return (
+        <main className="min-h-screen bg-background">
+            {/* Page header */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
+                <h1 className="text-4xl sm:text-5xl font-bold bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    {t.welcome}
+                </h1>
+                <p className="text-foreground mt-2">
+                    Discover amazing content from around the world
+                </p>
+            </div>
+
+            {/* Widget sections */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 pb-12">
+                <section className="overflow-x-hidden">
+                    <FeaturedCarousel />
+                </section>
+            </div>
+
+            {/* Call to Action Section */}
+            <section className="py-16 px-4 sm:px-6 lg:px-8 bg-linear-to-r from-[#ec4899]/10 via-[#a855f7]/10 to-[#10b981]/10 border-t border-[#2d2d44]">
+                <div className="max-w-4xl mx-auto text-center">
+                    <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-[#e5e5ff]">
+                        {language === "en"
+                            ? "Ready to Start Watching?"
+                            : "هل أنت مستعد للبدء في المشاهدة؟"}
+                    </h2>
+                    <p className="text-lg text-[#9ca3af] mb-8">
+                        {language === "en"
+                            ? "Join millions of users streaming unlimited movies and TV shows with OTTplay"
+                            : "انضم إلى ملايين المستخدمين الذين يشاهدون أفلام ومسلسلات غير محدودة مع OTTplay"}
+                    </p>
+                    <button className="px-8 py-4 rounded-lg bg-linear-to-r from-[#ec4899] to-[#a855f7] text-white font-bold text-lg hover:shadow-2xl hover:shadow-[#ec4899]/50 transition-all transform hover:scale-105">
+                        {language === "en" ? "Subscribe Now" : "اشترك الآن"}
+                    </button>
+                </div>
             </section>
-          ))
-        )}
-      </div>
 
-      {/* Call to Action Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-[#ec4899]/10 via-[#a855f7]/10 to-[#10b981]/10 border-t border-[#2d2d44]">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-[#e5e5ff]">
-            {language === 'en'
-              ? 'Ready to Start Watching?'
-              : 'هل أنت مستعد للبدء في المشاهدة؟'}
-          </h2>
-          <p className="text-lg text-[#9ca3af] mb-8">
-            {language === 'en'
-              ? 'Join millions of users streaming unlimited movies and TV shows with OTTplay'
-              : 'انضم إلى ملايين المستخدمين الذين يشاهدون أفلام ومسلسلات غير محدودة مع OTTplay'}
-          </p>
-          <button className="px-8 py-4 rounded-lg bg-gradient-to-r from-[#ec4899] to-[#a855f7] text-white font-bold text-lg hover:shadow-2xl hover:shadow-[#ec4899]/50 transition-all transform hover:scale-105">
-            {language === 'en' ? 'Subscribe Now' : 'اشترك الآن'}
-          </button>
-        </div>
-      </section>
+            {/* Footer */}
+            <Footer />
+        </main>
+    );
+};
 
-      {/* Footer */}
-      <Footer />
-    </main>
-  );
-}
+export default Home;

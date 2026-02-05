@@ -1,6 +1,10 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 
-function Skeleton({ className, ...props }) {
+import React from "react";
+
+const Skeleton = ({ className, ...props }) => {
     return (
         <div
             data-slot="skeleton"
@@ -8,6 +12,6 @@ function Skeleton({ className, ...props }) {
             {...props}
         />
     );
-}
+};
 
-export { Skeleton };
+export default Skeleton;
