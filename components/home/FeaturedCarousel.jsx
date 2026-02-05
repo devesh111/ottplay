@@ -1,11 +1,10 @@
 /**
  * Featured Carousel Component
  * Displays a carousel of featured content items from the OTTplay API
- * Uses the widget_mix_search section to fetch items
  * Features:
- * - Dynamic slide width based on image aspect ratio
+ * - 3 slides visible on desktop, 1 on mobile
  * - Autoplay functionality
- * - Bullet thumbnails below carousel for navigation
+ * - Bullet point navigation (no thumbnail images)
  */
 
 "use client";
@@ -25,7 +24,7 @@ import { Card } from "@/components/ui/card";
 
 /**
  * FeaturedCarousel Component
- * Fetches and displays featured content in a carousel format with autoplay and thumbnails
+ * Fetches and displays featured content in a carousel format with autoplay and bullet navigation
  */
 export function FeaturedCarousel() {
     const [items, setItems] = useState([]);
@@ -46,7 +45,6 @@ export function FeaturedCarousel() {
 
                 // Fetch featured carousel items using the widget_mix_search section
                 const response = await fetchCarouselItems({
-                    // module_name=Home&platform=web&section=widget_mix_search&limit=50&title=Featured+Carousel
                     module_name: "Home",
                     platform: "web",
                     section: "widget_mix_search",
@@ -116,10 +114,10 @@ export function FeaturedCarousel() {
     };
 
     /**
-     * Handle thumbnail click to navigate to specific slide
+     * Handle bullet click to navigate to specific slide
      * @param {number} index - Index of the slide to navigate to
      */
-    const handleThumbnailClick = (index) => {
+    const handleBulletClick = (index) => {
         if (carouselApi) {
             carouselApi.scrollTo(index);
             setCurrentIndex(index);
@@ -162,8 +160,8 @@ export function FeaturedCarousel() {
     if (loading) {
         return (
             <div className="w-full">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                    {[...Array(5)].map((_, i) => (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {[...Array(3)].map((_, i) => (
                         <Skeleton key={i} className="h-80 rounded-lg" />
                     ))}
                 </div>
@@ -199,7 +197,8 @@ export function FeaturedCarousel() {
     }
 
     /**
-     * Render carousel with items, autoplay, and thumbnail navigation
+     * Render carousel with items, autoplay, and bullet navigation
+     * 3 slides visible on desktop, 1 on mobile
      * Uses embla-carousel for smooth scrolling and navigation
      */
     return (
@@ -221,10 +220,10 @@ export function FeaturedCarousel() {
                         return (
                             <CarouselItem
                                 key={item.order || index}
-                                className="pl-2 md:pl-4 basis-full"
+                                className="pl-2 md:pl-4 basis-full sm:basis-full md:basis-1/3"
                             >
-                                {/* Individual carousel item card - full width */}
-                                <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group">
+                                {/* Individual carousel item card */}
+                                <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group h-full">
                                     {/* Image container with dynamic aspect ratio */}
                                     <div className="relative w-full" style={{ aspectRatio: "16/9" }}>
                                         {imageUrl ? (
@@ -256,50 +255,27 @@ export function FeaturedCarousel() {
                     })}
                 </CarouselContent>
 
-                {/* Navigation buttons */}
+                {/* Navigation buttons - hidden on mobile */}
                 <CarouselPrevious className="hidden md:flex -left-12 border-[#ec4899] text-[#ec4899] hover:bg-[#ec4899]/10" />
                 <CarouselNext className="hidden md:flex -right-12 border-[#ec4899] text-[#ec4899] hover:bg-[#ec4899]/10" />
             </Carousel>
 
-            {/* Bullet Thumbnails Navigation - Centered Below Carousel */}
-            <div className="flex justify-center items-center gap-3 mt-6 flex-wrap">
+            {/* Bullet Point Navigation - Centered Below Carousel */}
+            <div className="flex justify-center items-center gap-2 mt-6 flex-wrap">
                 {items.map((item, index) => {
-                    const imageUrl = getImageUrl(item);
                     const isActive = index === currentIndex;
 
                     return (
                         <button
                             key={item.order || index}
-                            onClick={() => handleThumbnailClick(index)}
-                            className={`relative flex-shrink-0 rounded-lg overflow-hidden transition-all duration-300 ${
+                            onClick={() => handleBulletClick(index)}
+                            className={`flex-shrink-0 rounded-full transition-all duration-300 ${
                                 isActive
-                                    ? "ring-2 ring-[#ec4899] scale-110"
-                                    : "opacity-60 hover:opacity-100"
+                                    ? "w-3 h-3 bg-[#ec4899] scale-125"
+                                    : "w-2 h-2 bg-gray-500 hover:bg-gray-400"
                             }`}
-                            style={{
-                                width: "80px",
-                                height: "45px",
-                            }}
                             aria-label={`Go to slide ${index + 1}`}
-                        >
-                            {imageUrl ? (
-                                <Image
-                                    src={imageUrl}
-                                    alt={`Thumbnail ${index + 1}`}
-                                    fill
-                                    className="object-cover"
-                                />
-                            ) : (
-                                <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900" />
-                            )}
-
-                            {/* Active indicator dot */}
-                            {isActive && (
-                                <div className="absolute inset-0 bg-[#ec4899]/20 flex items-center justify-center">
-                                    <div className="w-2 h-2 bg-[#ec4899] rounded-full" />
-                                </div>
-                            )}
-                        </button>
+                        />
                     );
                 })}
             </div>
