@@ -203,7 +203,7 @@ export function FeaturedCarousel() {
      */
     return (
         <div className="w-full">
-            {/* Main Carousel */}
+            {/* Main Carousel - No vertical padding */}
             <Carousel
                 className="w-full"
                 setApi={setCarouselApi}
@@ -222,8 +222,8 @@ export function FeaturedCarousel() {
                                 key={item.order || index}
                                 className="pl-2 md:pl-4 basis-full sm:basis-full md:basis-1/3"
                             >
-                                {/* Individual carousel item card */}
-                                <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group h-full">
+                                {/* Individual carousel item card - no padding */}
+                                <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group h-full m-0 p-0">
                                     {/* Image container with dynamic aspect ratio */}
                                     <div className="relative w-full" style={{ aspectRatio: "16/9" }}>
                                         {imageUrl ? (
@@ -260,8 +260,8 @@ export function FeaturedCarousel() {
                 <CarouselNext className="hidden md:flex -right-12 border-[#ec4899] text-[#ec4899] hover:bg-[#ec4899]/10" />
             </Carousel>
 
-            {/* Bullet Point Navigation - Centered Below Carousel */}
-            <div className="flex justify-center items-center gap-2 mt-6 flex-wrap">
+            {/* Bullet Point Navigation - Centered Below Carousel - Minimal spacing */}
+            <div className="flex justify-center items-center gap-2 mt-4 flex-wrap">
                 {items.map((item, index) => {
                     const isActive = index === currentIndex;
 
