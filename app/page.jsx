@@ -46,68 +46,10 @@ const Home = () => {
      * This provides all available sections for the home page
      */
     useEffect(() => {
-        const loadWidgets = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-
-                // Fetch widget list from API
-                const response = await fetchWidgetList();
-
-                // Extract widgets from response - handle different response structures
-                const widgetList = response?.result[0].active;
-                console.log(widgetList);
-                // Sort widgets by position if available
-                const sortedWidgets = widgetList.sort(
-                    (a, b) => (a.position || 0) - (b.position || 0),
-                );
-
-                setWidgets(sortedWidgets);
-            } catch (err) {
-                console.error("Failed to load widgets:", err);
-                setError("Failed to load page sections");
-                // Set mock data for development/fallback
-                setMockWidgets();
-            } finally {
-                setLoading(false);
-            }
-        };
         setLoading(false);
-        // loadWidgets();
     }, []);
 
-    /**
-     * Set mock widgets for development/fallback
-     * Provides placeholder sections when API is unavailable
-     */
-    const setMockWidgets = () => {
-        const mockData = [
-            {
-                id: "featured-carousel",
-                name: "Featured Carousel",
-                title: "Featured Carousel",
-                type: "carousel",
-                position: 1,
-            },
-            {
-                id: "trending-now",
-                name: "Trending Now",
-                title: "Trending Now",
-                type: "carousel",
-                position: 2,
-            },
-            {
-                id: "new-releases",
-                name: "New Releases",
-                title: "New Releases",
-                type: "carousel",
-                position: 3,
-            },
-        ];
-        setWidgets(mockData);
-    };
-
-    /**
+    /*
      * Translations for UI text
      */
     const translations = {
@@ -178,10 +120,6 @@ const Home = () => {
         );
     }
 
-    /**
-     * Render home page with widget sections
-     * Each widget is rendered as a section with its own carousel
-     */
     return (
         <main className="min-h-screen bg-background">
             {/* Page header */}
@@ -195,11 +133,11 @@ const Home = () => {
             </div>
 
             {/* Widget sections */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 pb-12">
-                <section className="overflow-x-hidden">
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 pb-10 pt-5 bg-section">
+                <div className="overflow-hidden">
                     <FeaturedCarousel />
-                </section>
-            </div>
+                </div>
+            </section>
 
             {/* Call to Action Section */}
             <section className="py-16 px-4 sm:px-6 lg:px-8 bg-linear-to-r from-[#ec4899]/10 via-[#a855f7]/10 to-[#10b981]/10 border-t border-[#2d2d44]">

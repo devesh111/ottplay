@@ -21,6 +21,7 @@ import {
 import Skeleton from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 /**
  * FeaturedCarousel Component
@@ -151,7 +152,10 @@ export function FeaturedCarousel() {
     const getImageUrl = (item) => {
         if (item.content_type === "sport" && item.sport?.backdrops?.[0]) {
             return item.sport.backdrops[0].url || item.sport.backdrops[0];
-        } else if (item.content_type === "movie" && item.movie?.backdrops?.[0]) {
+        } else if (
+            item.content_type === "movie" &&
+            item.movie?.backdrops?.[0]
+        ) {
             return item.movie.backdrops[0].url || item.movie.backdrops[0];
         } else if (item.content_type === "show" && item.show?.backdrops?.[0]) {
             return item.show.backdrops[0].url || item.show.backdrops[0];
@@ -169,6 +173,13 @@ export function FeaturedCarousel() {
         if (item.content_type === "movie") return item.movie?.name || "Movie";
         if (item.content_type === "show") return item.show?.name || "Show";
         return "Content";
+    };
+
+    const getItemLink = (item) => {
+        if (item.content_type === "movie") return item.movie.seo_url;
+        if (item.content_type === "show") return item.show.seo_url;
+        if (item.content_type === "sport") return item.sport.seo_url;
+        return "";
     };
 
     /**
@@ -246,6 +257,7 @@ export function FeaturedCarousel() {
                             {items.map((item, index) => {
                                 const imageUrl = getImageUrl(item);
                                 const itemTitle = getItemTitle(item);
+                                const itemLink = getItemLink(item);
 
                                 return (
                                     <CarouselItem
@@ -255,30 +267,39 @@ export function FeaturedCarousel() {
                                         {/* Individual carousel item card - no padding */}
                                         <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group h-full m-0 p-0">
                                             {/* Image container with dynamic aspect ratio */}
-                                            <div className="relative w-full" style={{ aspectRatio: "16/9" }}>
-                                                {imageUrl ? (
-                                                    <Image
-                                                        src={imageUrl}
-                                                        alt={itemTitle}
-                                                        fill
-                                                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                                        priority={index === 0}
-                                                    />
-                                                ) : (
-                                                    <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
-                                                        <span className="text-gray-400">
-                                                            {itemTitle}
-                                                        </span>
-                                                    </div>
-                                                )}
+                                            <Link href={itemLink}>
+                                                <div
+                                                    className="relative w-full"
+                                                    style={{
+                                                        aspectRatio: "16/9",
+                                                    }}
+                                                >
+                                                    {imageUrl ? (
+                                                        <Image
+                                                            src={imageUrl}
+                                                            alt={itemTitle}
+                                                            fill
+                                                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                                            priority={
+                                                                index === 0
+                                                            }
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-full bg-linear-to-br from-gray-700 to-gray-900 flex items-center justify-center">
+                                                            <span className="text-gray-400">
+                                                                {itemTitle}
+                                                            </span>
+                                                        </div>
+                                                    )}
 
-                                                {/* Overlay with title and info */}
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-                                                    <h3 className="text-white font-bold text-lg line-clamp-2">
-                                                        {itemTitle}
-                                                    </h3>
+                                                    {/* Overlay with title and info */}
+                                                    <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                                                        <h3 className="text-white font-bold text-lg line-clamp-2">
+                                                            {itemTitle}
+                                                        </h3>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </Link>
                                         </Card>
                                     </CarouselItem>
                                 );
@@ -306,7 +327,7 @@ export function FeaturedCarousel() {
                         <button
                             key={item.order || index}
                             onClick={() => handleBulletClick(index)}
-                            className={`flex-shrink-0 rounded-full transition-all duration-300 ${
+                            className={`shrink-0 rounded-full transition-all duration-300 ${
                                 isActive
                                     ? "w-3 h-3 bg-[#ec4899] scale-125"
                                     : "w-2 h-2 bg-gray-500 hover:bg-gray-400"
