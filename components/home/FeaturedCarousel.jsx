@@ -13,8 +13,9 @@ import { Card } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
+import React from "react";
 
-export function FeaturedCarousel() {
+const FeaturedCarousel = ({ params }) => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -27,24 +28,13 @@ export function FeaturedCarousel() {
                 setLoading(true);
                 setError(null);
 
-                // Fetch featured carousel items using the widget_mix_search section
-                const response = await fetchCarouselItems({
-                    module_name: "Home",
-                    platform: "web",
-                    section: "widget_mix_search",
-                    limit: 50,
-                    title: "Featured+Carousel",
-                });
-
-                // Extract items from response - handle different response structures
+                const response = await fetchCarouselItems(params);
                 const carouselItems = response?.rank || [];
                 console.log(carouselItems);
                 setItems(carouselItems);
             } catch (err) {
                 console.error("Failed to load carousel items:", err);
                 setError("Failed to load featured content");
-                // Set mock data for development/fallback
-                setMockItems();
             } finally {
                 setLoading(false);
             }
@@ -53,17 +43,14 @@ export function FeaturedCarousel() {
         loadCarouselItems();
     }, []);
 
-    /**
-     * Set up carousel autoplay
-     * Automatically advances to next slide every 5 seconds
-     */
+    /* Set up carousel autoplay. Automatically advances to next slide every 5 seconds */
     useEffect(() => {
         if (!carouselApi) return;
 
         // Set up autoplay interval
         const autoplayInterval = setInterval(() => {
             carouselApi.scrollNext();
-        }, 5000); // Change slide every 5 seconds
+        }, 5000);
 
         // Listen to carousel scroll events to update current index
         const handleSelect = () => {
@@ -79,28 +66,7 @@ export function FeaturedCarousel() {
         };
     }, [carouselApi]);
 
-    /**
-     * Set mock carousel items for development/fallback
-     * Provides placeholder data when API is unavailable
-     */
-    const setMockItems = () => {
-        const mockData = Array.from({ length: 10 }, (_, i) => ({
-            id: `featured-${i}`,
-            title: `Featured Content ${i + 1}`,
-            description: "An amazing piece of content you should watch",
-            posterUrl: `https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=300&h=450&fit=crop`,
-            thumbnailUrl: `https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=500&h=300&fit=crop`,
-            rating: 8.0 + Math.random() * 2,
-            type: i % 2 === 0 ? "movie" : "show",
-            year: 2024 - Math.floor(Math.random() * 5),
-        }));
-        setItems(mockData);
-    };
-
-    /**
-     * Handle bullet click to navigate to specific slide
-     * @param {number} index - Index of the slide to navigate to
-     */
+    /*  Handle bullet click to navigate to specific slide */
     const handleBulletClick = (index) => {
         if (carouselApi) {
             carouselApi.scrollTo(index);
@@ -108,30 +74,21 @@ export function FeaturedCarousel() {
         }
     };
 
-    /**
-     * Handle previous button click
-     */
+    /*  Handle previous button click */
     const handlePrevious = () => {
         if (carouselApi) {
             carouselApi.scrollPrev();
         }
     };
 
-    /**
-     * Handle next button click
-     */
+    /* Handle next button click */
     const handleNext = () => {
         if (carouselApi) {
             carouselApi.scrollNext();
         }
     };
 
-    /**
-     * Get image URL from item based on content type
-     * Handles different content types (movie, show, sport)
-     * @param {object} item - The carousel item
-     * @returns {string} Image URL
-     */
+    /* Get image URL from item based on content type (movie, show, sport) */
     const getImageUrl = (item) => {
         if (item.content_type === "sport" && item.sport?.backdrops?.[0]) {
             return item.sport.backdrops[0].url || item.sport.backdrops[0];
@@ -146,11 +103,7 @@ export function FeaturedCarousel() {
         return null;
     };
 
-    /**
-     * Get item title based on content type
-     * @param {object} item - The carousel item
-     * @returns {string} Item title
-     */
+    /* Get item title based on content type */
     const getItemTitle = (item) => {
         if (item.content_type === "sport") return item.sport?.name || "Sport";
         if (item.content_type === "movie") return item.movie?.name || "Movie";
@@ -158,17 +111,17 @@ export function FeaturedCarousel() {
         return "Content";
     };
 
+    /* Get item link based on content type */
     const getItemLink = (item) => {
-        if (item.content_type === "movie") return "/movie/" + item.movie.seo_url;
+        if (item.content_type === "movie")
+            return "/movie/" + item.movie.seo_url;
         if (item.content_type === "show") return "/show/" + item.show.seo_url;
-        if (item.content_type === "sport") return "/sports/" + item.sport.seo_url;
+        if (item.content_type === "sport")
+            return "/sports/" + item.sport.seo_url;
         return "#";
     };
 
-    /**
-     * Render loading skeleton
-     * Shows placeholder cards while data is loading
-     */
+    /* Render loading skeleton. Shows placeholder cards while data is loading */
     if (loading) {
         return (
             <div className="w-full">
@@ -181,10 +134,7 @@ export function FeaturedCarousel() {
         );
     }
 
-    /**
-     * Render error state
-     * Shows error message if API call fails
-     */
+    /* Render error state. Shows error message if API call fails */
     if (error) {
         return (
             <div className="text-center py-8">
@@ -196,28 +146,20 @@ export function FeaturedCarousel() {
         );
     }
 
-    /**
-     * Render empty state
-     * Shows message if no items are available
-     */
+    /* Render empty state hows message if no items are available */
     if (items.length === 0) {
         return (
             <div className="text-center py-8">
-                <p className="text-gray-400">No featured content available</p>
+                <p className="text-gray-400">No content available</p>
             </div>
         );
     }
 
-    /**
-     * Render carousel with items, autoplay, bullet navigation, and always-visible arrow buttons
-     * 3 slides visible on desktop, 1 on mobile
-     * Uses embla-carousel for smooth scrolling and navigation
-     */
     return (
         <div className="w-full">
             {/* Main Carousel Container with Arrow Buttons */}
             <div className="relative w-full flex items-center justify-center">
-                {/* Previous Arrow Button - Always Visible */}
+                {/* Previous Arrow Button */}
                 <button
                     onClick={handlePrevious}
                     className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-[#ec4899]/80 hover:bg-[#ec4899] text-white transition-all duration-300"
@@ -226,7 +168,6 @@ export function FeaturedCarousel() {
                     <ChevronLeft size={24} />
                 </button>
 
-                {/* Carousel - Hide scrollbar */}
                 <div className="w-full overflow-hidden">
                     <Carousel
                         className="w-full"
@@ -246,10 +187,8 @@ export function FeaturedCarousel() {
                                     <CarouselItem
                                         key={item.order || index}
                                         className="pl-2 md:pl-4 basis-full sm:basis-full md:basis-1/3"
-                                    >
-                                        {/* Individual carousel item card - no padding */}
-                                        <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group h-full m-0 p-0">
-                                            {/* Image container with dynamic aspect ratio */}
+                                    > 
+                                        <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group h-full m-0 p-0"> 
                                             <Link href={itemLink}>
                                                 <div
                                                     className="relative w-full"
@@ -291,7 +230,7 @@ export function FeaturedCarousel() {
                     </Carousel>
                 </div>
 
-                {/* Next Arrow Button - Always Visible */}
+                {/* Next Arrow Button */}
                 <button
                     onClick={handleNext}
                     className="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-[#ec4899]/80 hover:bg-[#ec4899] text-white transition-all duration-300"
@@ -301,7 +240,7 @@ export function FeaturedCarousel() {
                 </button>
             </div>
 
-            {/* Bullet Point Navigation - Centered Below Carousel - Minimal spacing */}
+            {/* Bullet Point Navigation - Centered Below Carousel */}
             <div className="flex justify-center items-center gap-2 mt-4 flex-wrap">
                 {items.map((item, index) => {
                     const isActive = index === currentIndex;
@@ -322,4 +261,6 @@ export function FeaturedCarousel() {
             </div>
         </div>
     );
-}
+};
+
+export default FeaturedCarousel;

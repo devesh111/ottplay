@@ -13,14 +13,22 @@ import { Card } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { fetchCarouselItems } from "@/lib/api/ottplay";
 
-export function NewReleasesCarousel() {
+/**
+ * ProvidersCarousel Component
+ * Fetches and displays providers ;ist in a carousel format with manual navigation
+ */
+export function ProviderCarousel() {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [carouselApi, setCarouselApi] = useState(null);
 
+    /**
+     * Fetch provider items on component mount
+     * Uses the providers endpoint with specific parameters
+     */
     useEffect(() => {
-        const loadNewReleases = async () => {
+        const loadProviders = async () => {
             try {
                 setLoading(true);
                 setError(null);
@@ -28,62 +36,96 @@ export function NewReleasesCarousel() {
                 const response = await fetchCarouselItems({
                     module_name: "Subscription",
                     platform: "web",
-                    section: "widget_new_release_27",
-                    limit: 15,
-                    title: "NewReleases",
-                    template_name: "new_releases",
-                    pin_it: true,
+                    section: "widget__oTTplay_partners",
+                    limit: 100,
+                    title: "OTTplay+partners",
+                    template_name: "providers",
+                    pin_it: false,
                 });
 
-                const newReleaseItems = response?.rank || [];
-                console.log("New Releases:", newReleaseItems);
-                setItems(newReleaseItems);
+                const providerItems = response?.rank || [];
+                console.log("Providers:", providerItems);
+                setItems(providerItems);
             } catch (err) {
-                console.error("Failed to load new releases:", err);
-                setError("Failed to load new releases");
+                console.error("Failed to load providers:", err);
+                setError("Failed to load providers list");
+                // Set mock data for development/fallback
+                setMockItems();
             } finally {
                 setLoading(false);
             }
         };
 
-        loadNewReleases();
+        loadProviders();
     }, []);
 
-    /* Handle previous button click */
+    /**
+     * Set mock provider items for development/fallback
+     * Provides placeholder data when API is unavailable
+     */
+    const setMockItems = () => {
+        const mockData = Array.from({ length: 15 }, (_, i) => ({
+            id: `providers-${i}`,
+            title: `Providers ${i + 1}`,
+            description: "Provider",
+            posterUrl: `https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=300&h=450&fit=crop`,
+            seo_url: `/content/providers-${i}`,
+            type: i % 2 === 0 ? "Provider" : "Provider",
+            year: 2026,
+        }));
+        setItems(mockData);
+    };
+
+    /**
+     * Handle previous button click
+     */
     const handlePrevious = () => {
         if (carouselApi) {
             carouselApi.scrollPrev();
         }
     };
 
-    /* Handle next button click */
+    /**
+     * Handle next button click
+     */
     const handleNext = () => {
         if (carouselApi) {
             carouselApi.scrollNext();
         }
     };
 
-    /* Get image URL from item based on content type */
+    /**
+     * Get image URL from item based on content type
+     * Handles different content types (movie, show, sport)
+     * @param {object} item - The carousel item
+     * @returns {string} Image URL
+     */
     const getImageUrl = (item) => {
-        return item.movie?.posters[0] || item.show?.posters[0] || null;
-    };
-
-    /* Get item title based on content type */
-    const getItemTitle = (item) => {
-        return item.movie?.name || item.show?.name || "Content";
+        return item.provider?.logo_url || null;
     };
 
     /**
-     * Get SEO URL for the item */
-    const getSeoUrl = (item) => {
-        return "movie" in item
-            ? "/movie/" + item.movie?.seo_url
-            : "show" in item
-              ? "/show/" + item.show?.seo_url
-              : "#";
+     * Get item title based on content type
+     * @param {object} item - The carousel item
+     * @returns {string} Item title
+     */
+    const getItemTitle = (item) => {
+        return item.provider?.name || "No Provider";
     };
 
-    /* Render loading skeleton */
+    /**
+     * Get SEO URL for the item
+     * @param {object} item - The carousel item
+     * @returns {string} SEO URL for linking
+     */
+    const getSeoUrl = (item) => {
+        return "/ott-platform/" + item.provider?.seourl || "#";
+    };
+
+    /**
+     * Render loading skeleton
+     * Shows placeholder cards while data is loading
+     */
     if (loading) {
         return (
             <div className="w-full">
@@ -96,35 +138,46 @@ export function NewReleasesCarousel() {
         );
     }
 
-    /* Render error state */
+    /**
+     * Render error state
+     * Shows error message if API call fails
+     */
     if (error) {
         return (
             <div className="text-center py-8">
                 <p className="text-red-500 text-lg">{error}</p>
                 <p className="text-gray-400 text-sm mt-2">
-                    Showing new releases
+                    Showing Providers
                 </p>
             </div>
         );
     }
 
-    /* Render empty state */
+    /**
+     * Render empty state
+     * Shows message if no items are available
+     */
     if (items.length === 0) {
         return (
             <div className="text-center py-8">
-                <p className="text-gray-400">No new releases available</p>
+                <p className="text-gray-400">No providers available</p>
             </div>
         );
     }
 
+    /**
+     * Render carousel with items and manual navigation
+     * 6 slides visible on desktop, 1 on mobile
+     * Uses embla-carousel for smooth scrolling and navigation
+     */
     return (
         <div className="w-full">
             {/* Section Title */}
-            <h2 className="text-2xl font-bold text-white mb-6">New Releases</h2>
+            <h2 className="text-2xl font-bold text-white mb-6">OTT Specials</h2>
 
-            {/* Main Carousel Container  */}
+            {/* Main Carousel Container with Arrow Buttons */}
             <div className="relative w-full flex items-center justify-center">
-                {/* Previous Arrow Button */}
+                {/* Previous Arrow Button - Always Visible */}
                 <button
                     onClick={handlePrevious}
                     className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-[#ec4899]/80 hover:bg-[#ec4899] text-white transition-all duration-300"
@@ -133,6 +186,7 @@ export function NewReleasesCarousel() {
                     <ChevronLeft size={24} />
                 </button>
 
+                {/* Carousel - Hide scrollbar */}
                 <div className="w-full overflow-hidden">
                     <Carousel
                         className="w-full"
@@ -153,12 +207,16 @@ export function NewReleasesCarousel() {
                                         key={item.order || index}
                                         className="pl-2 md:pl-4 basis-1/3 sm:basis-1/3 md:basis-1/6"
                                     >
+                                        {/* Link wrapper for navigation */}
+
+                                        {/* Individual carousel item card - no padding */}
                                         <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group h-full m-0 p-0">
+                                            {/* Image container with dynamic aspect ratio */}
                                             <Link href={seoUrl}>
                                                 <div
                                                     className="relative w-full"
                                                     style={{
-                                                        aspectRatio: "2/3",
+                                                        aspectRatio: "199/112",
                                                     }}
                                                 >
                                                     {imageUrl ? (
@@ -195,7 +253,7 @@ export function NewReleasesCarousel() {
                     </Carousel>
                 </div>
 
-                {/* Next Arrow Button */}
+                {/* Next Arrow Button - Always Visible */}
                 <button
                     onClick={handleNext}
                     className="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-[#ec4899]/80 hover:bg-[#ec4899] text-white transition-all duration-300"

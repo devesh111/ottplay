@@ -1,22 +1,7 @@
-/**
- * OTTplay Home Page
- *
- * This is the main landing page for the OTTplay platform.
- * It fetches widget sections from the API and dynamically renders them.
- *
- * Key Features:
- * - Fetches widget list from OTTplay API
- * - Removes hero section as per requirements
- * - Displays Featured Carousel as the first section
- * - Displays New Releases Carousel as the second section
- * - Responsive design with dark theme
- * - Supports multiple languages (English/Arabic)
- */
-
 "use client";
 
 import { useEffect, useState } from "react";
-import { FeaturedCarousel } from "@/components/home/FeaturedCarousel";
+import FeaturedCarousel from "@/components/home/FeaturedCarousel";
 import { NewReleasesCarousel } from "@/components/home/NewReleasesCarousel";
 import Footer from "@/components/layout/Footer";
 import Skeleton from "@/components/ui/skeleton";
@@ -27,6 +12,7 @@ import Skeleton from "@/components/ui/skeleton";
  */
 
 import React from "react";
+import { ProviderCarousel } from "@/components/home/ProviderCarousel";
 
 const Home = () => {
     const [language, setLanguage] = useState("en");
@@ -128,7 +114,15 @@ const Home = () => {
             {/* Featured Carousel Section */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 pb-10 pt-5 bg-section">
                 <div className="overflow-hidden">
-                    <FeaturedCarousel />
+                    <FeaturedCarousel
+                        params={{
+                            module_name: "Home",
+                            platform: "web",
+                            section: "widget_mix_search",
+                            limit: 50,
+                            title: "Featured+Carousel",
+                        }}
+                    />
                 </div>
             </section>
 
@@ -136,6 +130,13 @@ const Home = () => {
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 py-10">
                 <div className="overflow-hidden">
                     <NewReleasesCarousel />
+                </div>
+            </section>
+
+            {/* Providers Carousel Section */}
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 py-10">
+                <div className="overflow-hidden">
+                    <ProviderCarousel />
                 </div>
             </section>
 

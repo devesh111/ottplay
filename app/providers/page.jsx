@@ -70,7 +70,7 @@ export default function ProvidersPage() {
     return (
         <main className="min-h-screen bg-[#0f0f1e]">
             {/* Header Section */}
-            <section className="py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-[#ec4899]/10 via-[#a855f7]/10 to-[#10b981]/10 border-b border-[#2d2d44]">
+            <section className="py-12 px-4 sm:px-6 lg:px-8 bg-linear-to-r from-[#ec4899]/10 via-[#a855f7]/10 to-[#10b981]/10 border-b border-[#2d2d44]">
                 <div className="max-w-7xl mx-auto">
                     <h1 className="text-4xl sm:text-5xl font-bold text-[#e5e5ff] mb-4">
                         {t.title}
@@ -139,7 +139,7 @@ export default function ProvidersPage() {
                                     )}
 
                                     {/* View Content Button */}
-                                    <button className="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-[#ec4899] to-[#a855f7] text-white font-semibold hover:shadow-lg hover:shadow-[#ec4899]/50 transition-all">
+                                    <button className="w-full px-4 py-2 rounded-lg bg-linear-to-r from-[#ec4899] to-[#a855f7] text-white font-semibold hover:shadow-lg hover:shadow-[#ec4899]/50 transition-all">
                                         {t.viewContent}
                                     </button>
                                 </div>
