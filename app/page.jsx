@@ -8,6 +8,7 @@
  * - Fetches widget list from OTTplay API
  * - Removes hero section as per requirements
  * - Displays Featured Carousel as the first section
+ * - Displays New Releases Carousel as the second section
  * - Responsive design with dark theme
  * - Supports multiple languages (English/Arabic)
  */
@@ -16,6 +17,7 @@
 
 import { useEffect, useState } from "react";
 import { FeaturedCarousel } from "@/components/home/FeaturedCarousel";
+import { NewReleasesCarousel } from "@/components/home/NewReleasesCarousel";
 import Footer from "@/components/layout/Footer";
 import Skeleton from "@/components/ui/skeleton";
 
@@ -127,6 +129,13 @@ const Home = () => {
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 pb-10 pt-5 bg-section">
                 <div className="overflow-hidden">
                     <FeaturedCarousel />
+                </div>
+            </section>
+
+            {/* New Releases Carousel Section */}
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 py-10 bg-section">
+                <div className="overflow-hidden">
+                    <NewReleasesCarousel />
                 </div>
             </section>
 
