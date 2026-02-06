@@ -15,7 +15,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchWidgetList } from "@/lib/api/ottplay";
 import { FeaturedCarousel } from "@/components/home/FeaturedCarousel";
 import Footer from "@/components/layout/Footer";
 import Skeleton from "@/components/ui/skeleton";
@@ -29,7 +28,6 @@ import React from "react";
 
 const Home = () => {
     const [language, setLanguage] = useState("en");
-    const [widgets, setWidgets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -39,13 +37,6 @@ const Home = () => {
     useEffect(() => {
         const savedLang = localStorage.getItem("language");
         if (savedLang) setLanguage(savedLang);
-    }, []);
-
-    /**
-     * Fetch widget list from OTTplay API
-     * This provides all available sections for the home page
-     */
-    useEffect(() => {
         setLoading(false);
     }, []);
 
@@ -132,7 +123,7 @@ const Home = () => {
                 </p>
             </div>
 
-            {/* Widget sections */}
+            {/* Featured Carousel Section */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 pb-10 pt-5 bg-section">
                 <div className="overflow-hidden">
                     <FeaturedCarousel />
