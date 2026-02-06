@@ -133,7 +133,7 @@ const Home = () => {
             </section>
 
             {/* New Releases Carousel Section */}
-            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 py-10 bg-section">
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 py-10">
                 <div className="overflow-hidden">
                     <NewReleasesCarousel />
                 </div>

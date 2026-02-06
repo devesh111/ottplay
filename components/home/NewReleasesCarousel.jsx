@@ -1,15 +1,3 @@
-/**
- * New Releases Carousel Component
- * Displays a carousel of newly released content items from the OTTplay API
- * Features:
- * - 6 slides visible on desktop, 1 on mobile
- * - No autoplay (manual navigation only)
- * - Next/Previous arrow buttons
- * - No bullet point navigation
- * - Shows item name on hover
- * - Links to content using seo_url
- */
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -23,6 +11,7 @@ import {
 import Skeleton from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { fetchCarouselItems } from "@/lib/api/ottplay";
 
 /**
  * NewReleasesCarousel Component
@@ -44,29 +33,18 @@ export function NewReleasesCarousel() {
                 setLoading(true);
                 setError(null);
 
-                // Fetch new releases using the widget_new_release_27 section
-                const response = await fetch(
-                    'https://api2.ottplay.com/api/v4.7/web/ranking?module_name=Subscription&platform=web&section=widget_new_release_27&limit=15&pin_it=true&title=NewReleases&template_name=new_releases',
-                    {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': 'Bearer F421D63D166CA343454DD833B599C',
-                            'source': 'web',
-                            'platform': 'web',
-                            'apiVersion': '1',
-                        },
-                    }
-                );
+                const response = await fetchCarouselItems({
+                    module_name: "Subscription",
+                    platform: "web",
+                    section: "widget_new_release_27",
+                    limit: 15,
+                    title: "NewReleases",
+                    template_name: "new_releases",
+                    pin_it: true,
+                });
 
-                // Check if response is successful
-                if (!response.ok) {
-                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
-                }
-
-                // Parse and extract items from response
-                const data = await response.json();
-                const newReleaseItems = data?.rank || [];
-                console.log('New Releases:', newReleaseItems);
+                const newReleaseItems = response?.rank || [];
+                console.log("New Releases:", newReleaseItems);
                 setItems(newReleaseItems);
             } catch (err) {
                 console.error("Failed to load new releases:", err);
@@ -123,14 +101,7 @@ export function NewReleasesCarousel() {
      * @returns {string} Image URL
      */
     const getImageUrl = (item) => {
-        if (item.content_type === "sport" && item.sport?.backdrops?.[0]) {
-            return item.sport.backdrops[0].url || item.sport.backdrops[0];
-        } else if (item.content_type === "movie" && item.movie?.backdrops?.[0]) {
-            return item.movie.backdrops[0].url || item.movie.backdrops[0];
-        } else if (item.content_type === "show" && item.show?.backdrops?.[0]) {
-            return item.show.backdrops[0].url || item.show.backdrops[0];
-        }
-        return null;
+        return item.movie?.posters[0] || item.show?.posters[0] || null;
     };
 
     /**
@@ -139,10 +110,7 @@ export function NewReleasesCarousel() {
      * @returns {string} Item title
      */
     const getItemTitle = (item) => {
-        if (item.content_type === "sport") return item.sport?.name || "Sport";
-        if (item.content_type === "movie") return item.movie?.name || "Movie";
-        if (item.content_type === "show") return item.show?.name || "Show";
-        return "Content";
+        return item.movie?.name || item.show?.name || "Content";
     };
 
     /**
@@ -151,14 +119,7 @@ export function NewReleasesCarousel() {
      * @returns {string} SEO URL for linking
      */
     const getSeoUrl = (item) => {
-        if (item.content_type === "sport" && item.sport?.seo_url) {
-            return item.sport.seo_url;
-        } else if (item.content_type === "movie" && item.movie?.seo_url) {
-            return item.movie.seo_url;
-        } else if (item.content_type === "show" && item.show?.seo_url) {
-            return item.show.seo_url;
-        }
-        return "#";
+        return "movie" in item ? "/movie/" + item.movie?.seo_url : "show" in item ? "/show/" + item.show?.seo_url : "#";
     };
 
     /**
@@ -244,24 +205,32 @@ export function NewReleasesCarousel() {
                                 return (
                                     <CarouselItem
                                         key={item.order || index}
-                                        className="pl-2 md:pl-4 basis-full sm:basis-full md:basis-1/6"
+                                        className="pl-2 md:pl-4 basis-1/3 sm:basis-1/3 md:basis-1/6"
                                     >
                                         {/* Link wrapper for navigation */}
-                                        <Link href={seoUrl} className="block h-full">
-                                            {/* Individual carousel item card - no padding */}
-                                            <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group h-full m-0 p-0">
-                                                {/* Image container with dynamic aspect ratio */}
-                                                <div className="relative w-full" style={{ aspectRatio: "16/9" }}>
+
+                                        {/* Individual carousel item card - no padding */}
+                                        <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group h-full m-0 p-0">
+                                            {/* Image container with dynamic aspect ratio */}
+                                            <Link href={seoUrl}>
+                                                <div
+                                                    className="relative w-full"
+                                                    style={{
+                                                        aspectRatio: "2/3",
+                                                    }}
+                                                >
                                                     {imageUrl ? (
                                                         <Image
                                                             src={imageUrl}
                                                             alt={itemTitle}
                                                             fill
                                                             className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                                            priority={index === 0}
+                                                            priority={
+                                                                index === 0
+                                                            }
                                                         />
                                                     ) : (
-                                                        <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
+                                                        <div className="w-full h-full bg-linear-to-br from-gray-700 to-gray-900 flex items-center justify-center">
                                                             <span className="text-gray-400 text-center px-2">
                                                                 {itemTitle}
                                                             </span>
@@ -269,14 +238,14 @@ export function NewReleasesCarousel() {
                                                     )}
 
                                                     {/* Overlay with title - Show on hover */}
-                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+                                                    <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
                                                         <h3 className="text-white font-bold text-sm line-clamp-2">
                                                             {itemTitle}
                                                         </h3>
                                                     </div>
                                                 </div>
-                                            </Card>
-                                        </Link>
+                                            </Link>
+                                        </Card>
                                     </CarouselItem>
                                 );
                             })}

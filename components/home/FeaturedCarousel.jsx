@@ -1,13 +1,3 @@
-/**
- * Featured Carousel Component
- * Displays a carousel of featured content items from the OTTplay API
- * Features:
- * - 3 slides visible on desktop, 1 on mobile
- * - Autoplay functionality
- * - Bullet point navigation (no thumbnail images)
- * - Always visible next/previous arrow buttons
- */
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -23,10 +13,7 @@ import { Card } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
-/**
- * FeaturedCarousel Component
- * Fetches and displays featured content in a carousel format with autoplay and bullet navigation
- */
+
 export function FeaturedCarousel() {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -34,10 +21,6 @@ export function FeaturedCarousel() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [carouselApi, setCarouselApi] = useState(null);
 
-    /**
-     * Fetch carousel items on component mount
-     * Uses the Featured Carousel endpoint with specific parameters
-     */
     useEffect(() => {
         const loadCarouselItems = async () => {
             try {
@@ -176,10 +159,10 @@ export function FeaturedCarousel() {
     };
 
     const getItemLink = (item) => {
-        if (item.content_type === "movie") return item.movie.seo_url;
-        if (item.content_type === "show") return item.show.seo_url;
-        if (item.content_type === "sport") return item.sport.seo_url;
-        return "";
+        if (item.content_type === "movie") return "/movie/" + item.movie.seo_url;
+        if (item.content_type === "show") return "/show/" + item.show.seo_url;
+        if (item.content_type === "sport") return "/sports/" + item.sport.seo_url;
+        return "#";
     };
 
     /**
