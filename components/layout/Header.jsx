@@ -111,7 +111,7 @@ export function Header() {
     const t = translations[language] || translations.en;
 
     return (
-        <header className="bg-[#130726] shadow-sm sticky top-0 z-50">
+        <header className="bg-header shadow-sm sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
@@ -220,7 +220,10 @@ export function Header() {
                                     onOpenChange={setLoginOpen}
                                 >
                                     <DialogTrigger asChild>
-                                        <Button variant="outline" className="text-white hover:text-[#ec4899]">
+                                        <Button
+                                            variant="outline"
+                                            className="text-white hover:text-[#ec4899]"
+                                        >
                                             {t.login}
                                         </Button>
                                     </DialogTrigger>
@@ -237,7 +240,9 @@ export function Header() {
                                     onOpenChange={setRegisterOpen}
                                 >
                                     <DialogTrigger asChild>
-                                        <Button className="text-white">{t.signup}</Button>
+                                        <Button className="text-white">
+                                            {t.signup}
+                                        </Button>
                                     </DialogTrigger>
                                     <DialogContent>
                                         <RegisterForm

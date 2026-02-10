@@ -6,6 +6,9 @@
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
+    --color-header: var(--header);
+    --color-footer: var(--footer);
+    --color-border-bl: var(--border-bl);
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-geist-mono);
     --color-sidebar-ring: var(--sidebar-ring);
@@ -83,7 +86,10 @@
     --sidebar-accent-foreground: #e5e5ff;
     --sidebar-border: #2d2d44;
     --sidebar-ring: #ec4899;
-    --section: #1f1431;
+    --section: #130726;
+    --header: #130726;
+    --border-bl: #382e4b;
+    --footer: #0e051e;
 }
 
 .light {
@@ -118,7 +124,10 @@
     --sidebar-accent-foreground: #ffffff;
     --sidebar-border: #e5e5e5;
     --sidebar-ring: #ec4899;
-    --section: #1f1431;
+    --section: #130726;
+    --header: #130726;
+    --border-bl: #382e4b;
+    --footer: #0e051e;
 }
 
 @layer base {
@@ -163,4 +172,13 @@ button {
 
 body {
     overflow-x: hidden;
+}
+.movie-details-poster-image::before {
+    content: "";
+    box-shadow: 3px 0 10px 10px #130726;
+    width: 1px;
+    position: absolute;
+    bottom: 0;
+    left: -1px;
+    height: 100%;
 }
