@@ -41,6 +41,7 @@
     --color-card-foreground: var(--card-foreground);
     --color-card: var(--card);
     --color-section: var(--section);
+    --color-episode-card : var(--episode-card);
     --radius-sm: calc(var(--radius) - 4px);
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);
@@ -67,7 +68,7 @@
     --secondary-foreground: #e5e5ff;
     --muted: #2d2d44;
     --muted-foreground: #9ca3af;
-    --accent: #10b981;
+    --accent: #ec4899;
     --accent-foreground: #0f0f1e;
     --destructive: #ef4444;
     --border: #2d2d44;
@@ -89,7 +90,8 @@
     --section: #130726;
     --header: #130726;
     --border-bl: #382e4b;
-    --footer: #0e051e;
+    --footer: #0e051e;  
+    --episode-card: #1c142c;
 }
 
 .light {
@@ -105,7 +107,7 @@
     --secondary-foreground: #ffffff;
     --muted: #e5e5e5;
     --muted-foreground: #6b7280;
-    --accent: #10b981;
+    --accent: #ec4899;
     --accent-foreground: #ffffff;
     --destructive: #ef4444;
     --border: #e5e5e5;
@@ -128,6 +130,7 @@
     --header: #130726;
     --border-bl: #382e4b;
     --footer: #0e051e;
+    --episode-card: #1c142c;
 }
 
 @layer base {
@@ -173,7 +176,8 @@ button {
 body {
     overflow-x: hidden;
 }
-.movie-details-poster-image::before {
+.movie-details-poster-image::before, 
+.show-details-poster-image::before{
     content: "";
     box-shadow: 3px 0 10px 10px #130726;
     width: 1px;
