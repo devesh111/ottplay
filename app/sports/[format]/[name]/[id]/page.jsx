@@ -8,8 +8,7 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { fetchMovieDetails } from "@/lib/api/ottplay";
-import Image from "next/image";
+import { fetchSportDetails } from "@/lib/api/ottplay";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import parse from "html-react-parser";
@@ -18,23 +17,21 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlayIcon } from "lucide-react";
 
-const MoviePage = () => {
+const SportsPage = () => {
     const params = useParams();
+    const format = params.format;
     const name = params.name;
     const id = params.id;
     const [language, setLanguage] = useState("en");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [movieContent, setMovieContent] = useState({
-        moviePoster: "",
-        movieName: "",
-        movieDescription: "",
-        movieGenres: "",
-        movieCasts: [],
-        movieCrews: [],
-        ottplayRaiting: "",
+    const [sportContent, setSportContent] = useState({
+        sportPoster: "",
+        sportName: "",
+        sportDescription: "",
+        sportFormat: "",
+        sportCategory: "",
         releaseYear: "",
-        runTime: "",
         certification: "",
         languages: "",
         provider: {},
@@ -43,11 +40,6 @@ const MoviePage = () => {
 
     const playVideo = (playbackUrl) => {
         return (window.location.href = playbackUrl);
-    };
-
-    const convertRunTime = (time) => {
-        const t = time.split(":");
-        return parseInt(t[0]) + " Hr " + parseInt(t[1]) + " Min";
     };
 
     const convertDateTime = (dateTimeString) => {
@@ -61,60 +53,49 @@ const MoviePage = () => {
     }, []);
 
     useEffect(() => {
-        const fetchMovieContent = async () => {
+        const fetchSportContent = async () => {
             try {
                 setLoading(true);
                 setError(null);
 
-                const response = await fetchMovieDetails({
-                    seoUrl: name + "/" + id,
+                const response = await fetchSportDetails({
+                    ottplay_id: id,
                 });
 
-                const movie = response?.movies[0];
-                const movieGenres = movie?.genres
-                    .map((x) => x.name)
-                    .join(" • ");
-                const certification = movie?.certifications[0].certification;
-                const primaryLanguage = movie?.primary_language.name;
-                const otherLanguages = movie?.other_languages
-                    .map((x) => x.name)
-                    .join(" • ");
-                const movieLanguages = otherLanguages
-                    ? primaryLanguage + " • " + otherLanguages
-                    : primaryLanguage;
+                const sport = response;
+                console.log(sport);
+                const sportFormat = ["Sports",sport.format].join(" • ");
+                const certification = sport?.certifications[0].certification;
+                const sportLanguage = sport?.primary_language.name;
                 const ottProviderIcon =
-                    movie?.where_to_watch[0].provider.icon_url;
-                const ottProviderName = movie?.where_to_watch[0].provider.name;
+                    sport?.where_to_watch[0].provider.icon_url;
+                const ottProviderName = sport?.where_to_watch[0].provider.name;
                 const ottProviderSeoUrl =
-                    movie?.where_to_watch[0].provider.seourl;
-                const playbackUrl =
-                    movie?.where_to_watch[0].playback_details[0].playback_url;
-                console.log(movie);
-                console.log(movieGenres);
-                setMovieContent({
-                    movieName: movie.name,
-                    moviePoster: movie.backdrops?.[0]?.url,
-                    movieGenres: movieGenres,
-                    ottplayRaiting: movie.ottplay_rating,
-                    releaseYear: movie.release_year,
-                    runTime: convertRunTime(movie.runTime),
+                    sport?.where_to_watch[0].provider.seourl;
+                // const playbackUrl =
+                    // sport?.where_to_watch[0].playback_details[1].playback_url || "";
+                
+                setSportContent({
+                    sportName: sport.name,
+                    sportPoster: sport.backdrops[0].url,
+                    sportFormat: sportFormat,
+                    // sportCategory: sport.sports_category,
+                    releaseYear: sport.release_year,
                     certification: certification,
-                    movieDescription: movie.full_synopsis,
-                    ottReleaseDate: movie.onboarding_updated_on
-                        ? convertDateTime(movie.onboarding_updated_on)
+                    sportDescription: sport.full_synopsis,
+                    ottReleaseDate: sport.onboarding_updated_on
+                        ? convertDateTime(sport.onboarding_updated_on)
                         : null,
-                    releaseDate: movie.release_date
-                        ? convertDateTime(movie.release_date)
+                    releaseDate: sport.release_date
+                        ? convertDateTime(sport.release_date)
                         : null,
-                    languages: movieLanguages,
+                    languages: sportLanguage,
                     provider: {
                         name: ottProviderName,
                         icon: ottProviderIcon,
                         url: ottProviderSeoUrl,
                     },
-                    playbackUrl: playbackUrl,
-                    movieCasts: movie.casts,
-                    movieCrews: movie.crews,
+                    // playbackUrl: playbackUrl,
                 });
             } catch (error) {
                 setError(
@@ -126,7 +107,7 @@ const MoviePage = () => {
             }
         };
 
-        fetchMovieContent();
+        fetchSportContent();
     }, []);
 
     return (
@@ -141,14 +122,14 @@ const MoviePage = () => {
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
                             <BreadcrumbLink href="/movies">
-                                Movies
+                                Sports
                             </BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
-                        {movieContent.movieName && (
+                        {sportContent.sportName && (
                             <BreadcrumbItem>
                                 <BreadcrumbPage>
-                                    {movieContent.movieName}
+                                    {sportContent.sportName}
                                 </BreadcrumbPage>
                             </BreadcrumbItem>
                         )}
@@ -166,79 +147,56 @@ const MoviePage = () => {
                     <div className="flex flex-col md:flex-row gap-5 md:gap-20">
                         {/* Left Content */}
                         <div className="w-full md:w-1/2 order-2 md:order-1">
-                            {movieContent.movieName && (
+                            {sportContent.sportName && (
                                 <h1 className="text-3xl text-white font-semibold mb-2">
-                                    {movieContent.movieName}
+                                    {sportContent.sportName}
                                 </h1>
                             )}
-                            {movieContent.movieGenres && (
+                            {sportContent.sportFormat && (
                                 <p className="text-sm tracking-wide">
-                                    {movieContent.movieGenres}
+                                    {sportContent.sportFormat}
                                 </p>
                             )}
                             <div className="flex gap-2 max-w-lg mt-3 items-center justify-start text-center">
                                 <div className="rounded-md text-center">
-                                    {movieContent.provider && (
+                                    {sportContent.provider && (
                                         <Link
-                                            href={`/ott-platform/${movieContent.provider.url}`}
+                                            href={`/ott-platform/${sportContent.provider.url}`}
                                         >
                                             <img
-                                                src={movieContent.provider.icon}
-                                                alt={movieContent.provider.name}
+                                                src={sportContent.provider.icon}
+                                                alt={sportContent.provider.name}
                                                 className="w-10 rounded-md mx-auto"
                                             />
                                         </Link>
                                     )}
                                 </div>
-                                <div className="border border-border-bl p-2 flex gap-1 items-center rounded-md">
-                                    <span className="text-lg text-white font-bold">
-                                        {movieContent.ottplayRaiting}{" "}
-                                    </span>
-                                    <span className="text-xs font-bold leading-tight tracking-wide">
-                                        OTTPlay Rating
+                                <div className="border border-border-bl p-2 font-bold text-sm rounded-md">
+                                    <span className="text-sm font-semibold">
+                                        {sportContent.languages}{" "}
                                     </span>
                                 </div>
                                 <div className="border border-border-bl p-2 font-bold text-sm rounded-md">
-                                    {movieContent.releaseYear}
+                                    {sportContent.releaseYear}
                                 </div>
                                 <div className="border border-border-bl p-2 text-xs font-bold rounded-md">
-                                    {movieContent.certification}
+                                    {sportContent.certification}
                                 </div>
                                 <div className="border border-border-bl p-2 text-xs font-bold rounded-md">
-                                    {movieContent.runTime}
+                                    {sportContent.releaseDate}
                                 </div>
-                            </div>
-                            <div className="text-sm tracking-wide mt-5 mb-5 leading-relaxed">
-                                {movieContent.languages && (
-                                    <p>
-                                        <strong>Languages: </strong>{" "}
-                                        {movieContent.languages}{" "}
-                                    </p>
-                                )}
-                                {movieContent.releaseDate && (
-                                    <p>
-                                        <strong>Release Date :</strong>{" "}
-                                        {movieContent.releaseDate}
-                                    </p>
-                                )}
-                                {movieContent.ottReleaseDate && (
-                                    <p>
-                                        <strong>OTT Release Date:</strong>{" "}
-                                        {movieContent.ottReleaseDate}
-                                    </p>
-                                )}
                             </div>
                             <div className="tracking-wide mt-5 text-md text-white">
                                 {parse(
                                     DOMPurify.sanitize(
-                                        movieContent.movieDescription,
+                                        sportContent.sportDescription,
                                     ),
                                 )}
                             </div>
                             <div>
                                 <Button
                                     onClick={() =>
-                                        playVideo(movieContent.playbackUrl)
+                                        playVideo(sportContent.playbackUrl)
                                     }
                                     className="px-8 py-4 rounded-sm bg-linear-to-r from-[#ec4899] to-[#a855f7] text-white font-bold text-lg hover:shadow-2xl hover:shadow-[#ec4899]/50 transition-all transform hover:scale-105 mt-5"
                                 >
@@ -248,10 +206,10 @@ const MoviePage = () => {
                         </div>
                         {/* Right Content */}
                         <div className="md:w-1/2 order-1` md:order-2 relative movie-details-poster-image">
-                            {movieContent.moviePoster && (
+                            {sportContent.sportPoster && (
                                 <img
-                                    src={movieContent.moviePoster}
-                                    alt={movieContent.movieName}
+                                    src={sportContent.sportPoster}
+                                    alt={sportContent.sportName}
                                     className="w-full h-auto"
                                 />
                             )}
@@ -263,4 +221,4 @@ const MoviePage = () => {
     );
 };
 
-export default MoviePage;
+export default SportsPage;

@@ -117,7 +117,7 @@ const FeaturedCarousel = ({ params }) => {
             return "/movie/" + item.movie.seo_url;
         if (item.content_type === "show") return "/show/" + item.show.seo_url;
         if (item.content_type === "sport")
-            return "/sports/" + item.sport.seo_url;
+            return "/sports/" + item?.sport?.format + "/" + item?.sport?.seo_url;
         return "#";
     };
 

@@ -121,7 +121,7 @@ const ShowPage = () => {
 
                 setShowContent({
                     showName: show.name,
-                    showPoster: show.backdrops[0].url,
+                    showPoster: show.backdrops?.[0]?.url,
                     showGenres: showGenres,
                     ottplayRaiting: show.ottplay_rating,
                     releaseYear: show.release_year,
