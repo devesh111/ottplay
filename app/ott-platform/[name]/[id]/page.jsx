@@ -7,7 +7,14 @@ import LoadingSkeleton from "@/components/layout/LoadingSkeleton";
 import ErrorDisplay from "@/components/layout/ErrorDisplay";
 import { ProviderWidgetCarousel } from "@/components/provider/ProviderWidgetsCarousel";
 import ProviderFeaturedCarousel from "@/components/provider/ProviderFeaturedCarousel";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const OttProviderPage = () => {
     const params = useParams();
@@ -31,7 +38,6 @@ const OttProviderPage = () => {
                     platform: "web",
                     menu: name + "/" + id,
                 });
-                // console.log(response);
                 const wList = response?.result?.[0].active;
                 const activeWidgets = wList.map((w) => ({
                     module_name: `${name}/${id}`,
@@ -44,7 +50,7 @@ const OttProviderPage = () => {
                     provider_id: w.provider_id,
                     ottplay_id: w.ottplay_id,
                 }));
-                // console.log(activeWidgets);
+
                 if (activeWidgets) {
                     const featuredWidgetItem = activeWidgets.filter(
                         (item) => item.title === "Mix Search",
@@ -53,7 +59,7 @@ const OttProviderPage = () => {
                         (item) => item.title !== "Mix Search",
                     );
                     setWidgetList(remainingItems);
-                    if (featuredWidgetItem) {
+                    if (featuredWidgetItem.length > 0) {
                         setFeaturedItem(featuredWidgetItem[0]);
                     }
                 }
@@ -91,16 +97,12 @@ const OttProviderPage = () => {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/">
-                                Premium
-                            </BreadcrumbLink>
+                            <BreadcrumbLink href="/">Premium</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         {title && (
                             <BreadcrumbItem>
-                                <BreadcrumbPage>
-                                    {title}
-                                </BreadcrumbPage>
+                                <BreadcrumbPage>{title}</BreadcrumbPage>
                             </BreadcrumbItem>
                         )}
                     </BreadcrumbList>
@@ -130,7 +132,7 @@ const OttProviderPage = () => {
                 widgetList.map((widget, index) => (
                     <section
                         key={index}
-                        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 py-10"
+                        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 pt-10"
                     >
                         <div className="overflow-hidden">
                             <ProviderWidgetCarousel

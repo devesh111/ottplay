@@ -27,11 +27,11 @@ const ProviderFeaturedCarousel = ({ params }) => {
             try {
                 setLoading(true);
                 setError(null);
-
-                const response = await fetchProviderCarouselItems(params);
-                const carouselItems = response?.rank || [];
-                console.log(carouselItems);
-                setItems(carouselItems);
+                if (params.module_name !== undefined) {
+                    const response = await fetchProviderCarouselItems(params);
+                    const carouselItems = response?.rank || [];
+                    setItems(carouselItems);
+                }
             } catch (err) {
                 console.error("Failed to load carousel items:", err);
                 setError("Failed to load featured content");
@@ -117,7 +117,9 @@ const ProviderFeaturedCarousel = ({ params }) => {
             return "/movie/" + item.movie.seo_url;
         if (item.content_type === "show") return "/show/" + item.show.seo_url;
         if (item.content_type === "sport")
-            return "/sports/" + item?.sport?.format + "/" + item?.sport?.seo_url;
+            return (
+                "/sports/" + item?.sport?.format + "/" + item?.sport?.seo_url
+            );
         return "#";
     };
 
@@ -187,8 +189,8 @@ const ProviderFeaturedCarousel = ({ params }) => {
                                     <CarouselItem
                                         key={item.order || index}
                                         className="pl-2 md:pl-4 basis-full sm:basis-full md:basis-1/3"
-                                    > 
-                                        <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group h-full m-0 p-0"> 
+                                    >
+                                        <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group h-full m-0 p-0">
                                             <Link href={itemLink}>
                                                 <div
                                                     className="relative w-full"

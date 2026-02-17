@@ -27,9 +27,7 @@ export function ProviderWidgetCarousel({ params }) {
                 setError(null);
 
                 const response = await fetchProviderCarouselItems(params);
-                // console.log(response);
                 const widgetItems = response?.rank || [];
-                // console.log("New Releases:", newReleaseItems);
                 setItems(widgetItems);
                 setWidgetTitle(response?.title || "");
             } catch (err) {
@@ -59,12 +57,22 @@ export function ProviderWidgetCarousel({ params }) {
 
     /* Get image URL from item based on content type */
     const getImageUrl = (item) => {
-        return item.movie?.posters[0] || item.show?.posters[0] || null;
+        const image =
+            item.movie?.posters[0] ||
+            item.show?.posters[0] ||
+            item.sport?.posters[0] ||
+            null;
+        if (image) {
+            return image.split("?")[0];
+        }
+        return image;
     };
 
     /* Get item title based on content type */
     const getItemTitle = (item) => {
-        return item.movie?.name || item.show?.name || "Content";
+        return (
+            item.movie?.name || item.show?.name || item.sport?.name || "Content"
+        );
     };
 
     /**
@@ -74,7 +82,9 @@ export function ProviderWidgetCarousel({ params }) {
             ? "/movie/" + item.movie?.seo_url
             : "show" in item
               ? "/show/" + item.show?.seo_url
-              : "#";
+              : "sport" in item
+                ? "/sports/" + item.sport?.format + "/" + item.sport?.seo_url
+                : "#";
     };
 
     /* Render loading skeleton */
