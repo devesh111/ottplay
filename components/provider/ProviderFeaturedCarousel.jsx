@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { fetchCarouselItems } from "@/lib/api/ottplay";
+import { fetchProviderCarouselItems } from "@/lib/api/ottplay";
 import {
     Carousel,
     CarouselContent,
@@ -15,7 +15,7 @@ import Link from "next/link";
 
 import React from "react";
 
-const FeaturedCarousel = ({ params }) => {
+const ProviderFeaturedCarousel = ({ params }) => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -28,7 +28,7 @@ const FeaturedCarousel = ({ params }) => {
                 setLoading(true);
                 setError(null);
 
-                const response = await fetchCarouselItems(params);
+                const response = await fetchProviderCarouselItems(params);
                 const carouselItems = response?.rank || [];
                 console.log(carouselItems);
                 setItems(carouselItems);
@@ -241,7 +241,7 @@ const FeaturedCarousel = ({ params }) => {
             </div>
 
             {/* Bullet Point Navigation - Centered Below Carousel */}
-            <div className="flex justify-center items-center gap-2 mt-4 flex-wrap pb-3">
+            <div className="flex justify-center items-center gap-2 mt-4 flex-wrap min-h-4">
                 {items.map((item, index) => {
                     const isActive = index === currentIndex;
 
@@ -263,4 +263,4 @@ const FeaturedCarousel = ({ params }) => {
     );
 };
 
-export default FeaturedCarousel;
+export default ProviderFeaturedCarousel;

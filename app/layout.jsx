@@ -3,6 +3,7 @@ import { AppProvider } from "@/contexts/AppContext";
 import { Header } from "@/components/layout/Header";
 import "./globals.css";
 import Footer from "@/components/layout/Footer";
+import BackToTopButton from "@/components/layout/BackToTopButton";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -42,6 +43,7 @@ export default function RootLayout({ children }) {
                 <AppProvider>
                     <Header />
                     {children}
+                    <BackToTopButton />
                     <Footer />
                 </AppProvider>
             </body>

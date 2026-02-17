@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import FeaturedCarousel from "@/components/home/FeaturedCarousel";
 import { NewReleasesCarousel } from "@/components/home/NewReleasesCarousel";
-import Footer from "@/components/layout/Footer";
-import Skeleton from "@/components/ui/skeleton";
 
 /**
  * Home Page Component
@@ -13,6 +11,8 @@ import Skeleton from "@/components/ui/skeleton";
 
 import React from "react";
 import { ProviderCarousel } from "@/components/home/ProviderCarousel";
+import LoadingSkeleton from "@/components/layout/LoadingSkeleton";
+import ErrorDisplay from "@/components/layout/ErrorDisplay";
 
 const Home = () => {
     const [language, setLanguage] = useState("en");
@@ -53,31 +53,7 @@ const Home = () => {
      * Shows skeleton loaders while fetching widget data
      */
     if (loading) {
-        return (
-            <main className="min-h-screen bg-background">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <div className="space-y-12">
-                        {[...Array(3)].map((_, i) => (
-                            <section key={i}>
-                                <div
-                                    data-slot="skeleton"
-                                    className="bg-accent animate-pulse rounded-md h-8 w-48 mb-6"
-                                ></div>
-                                <Skeleton className="h-8 w-48 mb-6" />
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                                    {[...Array(5)].map((_, j) => (
-                                        <Skeleton
-                                            key={j}
-                                            className="h-80 rounded-lg"
-                                        />
-                                    ))}
-                                </div>
-                            </section>
-                        ))}
-                    </div>
-                </div>
-            </main>
-        );
+        return <LoadingSkeleton />;
     }
 
     /**
@@ -85,18 +61,7 @@ const Home = () => {
      * Shows error message if widget list fetch fails
      */
     if (error) {
-        return (
-            <main className="min-h-screen bg-background">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <div className="text-center">
-                        <p className="text-red-500 text-lg mb-4">{error}</p>
-                        <p className="text-gray-400">
-                            Please try refreshing the page
-                        </p>
-                    </div>
-                </div>
-            </main>
-        );
+        return <ErrorDisplay />;
     }
 
     return (

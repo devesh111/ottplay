@@ -162,7 +162,7 @@ export function SearchAutocomplete() {
                         onChange={handleInputChange}
                         onKeyDown={handleKeyDown}
                         onFocus={() => query && setIsOpen(true)}
-                        className="pl-10 pr-4 py-2 text-base"
+                        className="pl-10 pr-4 py-2 text-xs"
                     />
                     {isLoading && (
                         <Loader2 className="absolute right-3 w-5 h-5 text-muted-foreground animate-spin" />

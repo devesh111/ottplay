@@ -9,7 +9,6 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { fetchMovieDetails } from "@/lib/api/ottplay";
-import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import parse from "html-react-parser";
@@ -88,7 +87,7 @@ const MoviePage = () => {
                 const ottProviderSeoUrl =
                     movie?.where_to_watch[0].provider.seourl;
                 const playbackUrl =
-                    movie?.where_to_watch[0].playback_details[0].playback_url;
+                    movie?.where_to_watch[0].playback_details?.[0]?.playback_url;
                 console.log(movie);
                 console.log(movieGenres);
                 setMovieContent({
