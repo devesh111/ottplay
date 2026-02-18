@@ -16,6 +16,11 @@ import DOMPurify from "dompurify";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlayIcon } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { VideoPlayer } from "@/components/video/VideoPlayer";
+
+const VIDEO_URL =
+    "https://vz-7335a46e-2e0.b-cdn.net/594c2931-3911-4bc3-a7ee-a085f5050931/playlist.m3u8";
 
 const MoviePage = () => {
     const params = useParams();
@@ -24,6 +29,7 @@ const MoviePage = () => {
     const [language, setLanguage] = useState("en");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [isOpen, setIsOpen] = useState(false);
     const [movieContent, setMovieContent] = useState({
         moviePoster: "",
         movieName: "",
@@ -40,8 +46,9 @@ const MoviePage = () => {
         playbackUrl: "",
     });
 
-    const playVideo = (playbackUrl) => {
-        return (window.location.href = playbackUrl);
+    const playVideo = () => {
+        setIsOpen(true);
+        // return (window.location.href = playbackUrl);
     };
 
     const convertRunTime = (time) => {
@@ -87,7 +94,8 @@ const MoviePage = () => {
                 const ottProviderSeoUrl =
                     movie?.where_to_watch[0].provider.seourl;
                 const playbackUrl =
-                    movie?.where_to_watch[0].playback_details?.[0]?.playback_url;
+                    movie?.where_to_watch[0].playback_details?.[0]
+                        ?.playback_url;
                 console.log(movie);
                 console.log(movieGenres);
                 setMovieContent({
@@ -236,9 +244,7 @@ const MoviePage = () => {
                             </div>
                             <div>
                                 <Button
-                                    onClick={() =>
-                                        playVideo(movieContent.playbackUrl)
-                                    }
+                                    onClick={() => playVideo()}
                                     className="px-8 py-4 rounded-sm bg-linear-to-r from-[#ec4899] to-[#a855f7] text-white font-bold text-lg hover:shadow-2xl hover:shadow-[#ec4899]/50 transition-all transform hover:scale-105 mt-5"
                                 >
                                     <PlayIcon fill="white" /> Play
@@ -258,6 +264,21 @@ const MoviePage = () => {
                     </div>
                 </section>
             )}
+
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                <DialogContent className="max-w-4xl w-full h-auto p-0 bg-black border-slate-700 flex flex-col">
+                    {/* Hidden DialogTitle for accessibility */}
+                    <DialogTitle className="sr-only">Video Player</DialogTitle>
+
+                    {/* Video Player - fills the modal */}
+                    <div className="flex-1 w-full h-full">
+                        <VideoPlayer
+                            videoUrl={VIDEO_URL}
+                            onClose={() => setIsOpen(false)}
+                        />
+                    </div>
+                </DialogContent>
+            </Dialog>
         </main>
     );
 };
