@@ -164,7 +164,6 @@ const SearchPage = () => {
                                         </Link>
                                     )}
 
-                                    {/* Result Info */}
                                     <div className="p-4">
                                         {/* Title */}
                                         <h3 className="font-semibold text-sm line-clamp-2 mb-2">
