@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import Link from "next/link";
 import { SearchAutocomplete } from "@/components/home/SearchAutoComplete";
 import { fetchSearchContent } from "@/lib/api/ottplay";
 
-export default function SearchPage() {
+const SearchPage = () => {
     const searchParams = useSearchParams();
     const query = searchParams.get("q") || "";
     const [results, setResults] = useState([]);
@@ -200,4 +200,14 @@ export default function SearchPage() {
             </div>
         </div>
     );
-}
+};
+
+const Page = () => {
+    return (
+        <Suspense>
+            <SearchPage />
+        </Suspense>
+    );
+};
+
+export default Page;
