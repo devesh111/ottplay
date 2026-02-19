@@ -93,27 +93,13 @@ export function VideoPlayer({ videoUrl, onClose }) {
         };
     }, [videoUrl]);
 
-    // Handle playback speed change
-    const handleSpeedChange = (speed) => {
-        if (playerRef.current) {
-            playerRef.current.playbackRate(speed);
-            setCurrentSpeed(speed);
-        }
-    };
-
-    // Handle quality change
-    const handleQualityChange = (quality) => {
-        setCurrentQuality(quality);
-        console.log(`Quality changed to: ${quality}`);
-    };
-
     return (
         <div
             ref={containerRef}
-            className="relative w-full h-full bg-black flex flex-col"
+            className="relative w-full h-full bg-black"
         >
             {/* Video Player Container */}
-            <div className="flex-1 relative bg-black overflow-hidden">
+            <div className="relative bg-black overflow-hidden">
                 <video
                     ref={videoRef}
                     className="video-js vjs-default-skin w-full h-full"
@@ -121,55 +107,6 @@ export function VideoPlayer({ videoUrl, onClose }) {
                     crossOrigin="anonymous"
                 />
             </div>
-
-            {/* Custom Controls - Positioned at bottom inside player */}
-            {/* <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black via-black/50 to-transparent p-4 flex items-center justify-between z-40"> */}
-                {/* Speed Controls */}
-                {/* <div className="flex gap-2">
-                    <span className="text-white text-sm font-semibold mr-2">
-                        Speed:
-                    </span>
-                    {[0.5, 1, 1.5, 2].map((speed) => (
-                        <button
-                            key={speed}
-                            onClick={() => handleSpeedChange(speed)}
-                            className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                                currentSpeed === speed
-                                    ? "bg-blue-600 text-white"
-                                    : "bg-slate-700 text-slate-200 hover:bg-slate-600"
-                            }`}
-                        >
-                            {speed}x
-                        </button>
-                    ))}
-                </div> */}
-
-                {/* Quality Controls */}
-                {/* <div className="flex items-center gap-2">
-                    <label className="text-white text-sm font-semibold">
-                        Quality:
-                    </label>
-                    <select
-                        value={currentQuality}
-                        onChange={(e) => handleQualityChange(e.target.value)}
-                        className="px-3 py-1 rounded bg-slate-700 text-white text-sm font-medium hover:bg-slate-600 transition-colors cursor-pointer"
-                    >
-                        <option value="auto">Auto</option>
-                        <option value="1080">1080p</option>
-                        <option value="720">720p</option>
-                        <option value="480">480p</option>
-                        <option value="360">360p</option>
-                    </select>
-                </div> */}
-
-                {/* Close Button */}
-                {/* <button
-                    onClick={onClose}
-                    className="px-4 py-1 rounded bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors"
-                >
-                    Close
-                </button>
-            </div> */}
         </div>
     );
 }

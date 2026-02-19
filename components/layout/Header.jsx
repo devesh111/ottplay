@@ -82,21 +82,15 @@ export function Header() {
                         >
                             {t.shows}
                         </Link>
-                        <Link
-                            href="/live-tv"
-                            className="text-gray-100 hover:text-primary"
-                        >
-                            {t.liveTV}
-                        </Link>
                     </nav>
 
                     {/* Search Bar */}
-                    <div>
+                    <div className="hidden md:flex">
                         <SearchAutocomplete />
                     </div>
 
                     {/* Auth Buttons */}
-                    <div className="hidden md:flex items-center space-x-4">
+                    <div className="md:flex items-center space-x-4">
                         {/* Language Switcher */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -106,7 +100,7 @@ export function Header() {
                                     className="flex items-center gap-2 hover:bg-[#ec4899] hover:text-white"
                                 >
                                     <Globe className="w-4 h-4" />
-                                    <span className="hidden sm:inline">
+                                    <span className="sm:inline">
                                         {language.toUpperCase()}
                                     </span>
                                 </Button>
@@ -124,7 +118,7 @@ export function Header() {
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
-                        <Button className="bg-purple-600 hover:bg-purple-700 text-white">
+                        <Button className="bg-purple-600 hover:bg-purple-700 text-white hidden md:flex">
                             {t.subscribe}
                         </Button>
                     </div>
@@ -140,24 +134,19 @@ export function Header() {
 
                 {/* Mobile Navigation */}
                 {isOpen && (
-                    <div className="md:hidden pb-4 space-y-2">
+                    <div className="md:hidden pb-4 pt-5">
+                        <SearchAutocomplete />
                         <Link
-                            href="/content/movies"
+                            href="/movies"
                             className="block py-2 text-gray-100 hover:text-primary"
                         >
                             {t.movies}
                         </Link>
                         <Link
-                            href="/content/shows"
+                            href="/shows"
                             className="block py-2 text-gray-100 hover:text-primary"
                         >
                             {t.shows}
-                        </Link>
-                        <Link
-                            href="/content/live-tv"
-                            className="block py-2 text-gray-100 hover:text-primary"
-                        >
-                            {t.liveTV}
                         </Link>
                     </div>
                 )}

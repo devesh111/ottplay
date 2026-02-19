@@ -266,7 +266,7 @@ const MoviePage = () => {
             )}
 
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogContent className="max-w-4xl w-full h-auto p-0 bg-black border-slate-700 flex flex-col">
+                <DialogContent className="w-full h-auto p-0 bg-black border-slate-700 flex flex-col">
                     {/* Hidden DialogTitle for accessibility */}
                     <DialogTitle className="sr-only">Video Player</DialogTitle>
 
