@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -8,107 +7,30 @@ import {
     CarouselContent,
     CarouselItem,
 } from "@/components/ui/carousel";
-import Skeleton from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { fetchCarouselItems } from "@/lib/api/ottplay";
+import { useState } from "react";
 
-export function NewReleasesCarousel() {
-    const [items, setItems] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+/**
+ * NewReleasesCarousel — Client Component (interactive only).
+ * Receives `items` as a prop from the Server Component parent.
+ */
+export function NewReleasesCarousel({ items = [] }) {
     const [carouselApi, setCarouselApi] = useState(null);
 
-    useEffect(() => {
-        const loadNewReleases = async () => {
-            try {
-                setLoading(true);
-                setError(null);
+    const getImageUrl = (item) =>
+        item.movie?.posters?.[0] || item.show?.posters?.[0] || null;
 
-                const response = await fetchCarouselItems({
-                    module_name: "Subscription",
-                    platform: "web",
-                    section: "widget_new_release_27",
-                    limit: 15,
-                    title: "NewReleases",
-                    template_name: "new_releases",
-                    pin_it: true,
-                });
+    const getItemTitle = (item) =>
+        item.movie?.name || item.show?.name || "Content";
 
-                const newReleaseItems = response?.rank || [];
-                console.log("New Releases:", newReleaseItems);
-                setItems(newReleaseItems);
-            } catch (err) {
-                console.error("Failed to load new releases:", err);
-                setError("Failed to load new releases");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        loadNewReleases();
-    }, []);
-
-    /* Handle previous button click */
-    const handlePrevious = () => {
-        if (carouselApi) {
-            carouselApi.scrollPrev();
-        }
-    };
-
-    /* Handle next button click */
-    const handleNext = () => {
-        if (carouselApi) {
-            carouselApi.scrollNext();
-        }
-    };
-
-    /* Get image URL from item based on content type */
-    const getImageUrl = (item) => {
-        return item.movie?.posters[0] || item.show?.posters[0] || null;
-    };
-
-    /* Get item title based on content type */
-    const getItemTitle = (item) => {
-        return item.movie?.name || item.show?.name || "Content";
-    };
-
-    /**
-     * Get SEO URL for the item */
-    const getSeoUrl = (item) => {
-        return "movie" in item
+    const getSeoUrl = (item) =>
+        "movie" in item
             ? "/movie/" + item.movie?.seo_url
             : "show" in item
-              ? "/show/" + item.show?.seo_url
-              : "#";
-    };
+            ? "/show/" + item.show?.seo_url
+            : "#";
 
-    /* Render loading skeleton */
-    if (loading) {
-        return (
-            <div className="w-full">
-                <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                    {[...Array(6)].map((_, i) => (
-                        <Skeleton key={i} className="h-48 rounded-lg" />
-                    ))}
-                </div>
-            </div>
-        );
-    }
-
-    /* Render error state */
-    if (error) {
-        return (
-            <div className="text-center py-8">
-                <p className="text-red-500 text-lg">{error}</p>
-                <p className="text-gray-400 text-sm mt-2">
-                    Showing new releases
-                </p>
-            </div>
-        );
-    }
-
-    /* Render empty state */
     if (items.length === 0) {
         return (
             <div className="text-center py-8">
@@ -119,14 +41,11 @@ export function NewReleasesCarousel() {
 
     return (
         <div className="w-full">
-            {/* Section Title */}
             <h2 className="text-2xl font-bold text-white mb-6">New Releases</h2>
 
-            {/* Main Carousel Container  */}
             <div className="relative w-full flex items-center justify-center">
-                {/* Previous Arrow Button */}
                 <button
-                    onClick={handlePrevious}
+                    onClick={() => carouselApi?.scrollPrev()}
                     className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-[#ec4899]/80 hover:bg-[#ec4899] text-white transition-all duration-300"
                     aria-label="Previous slide"
                 >
@@ -137,17 +56,13 @@ export function NewReleasesCarousel() {
                     <Carousel
                         className="w-full"
                         setApi={setCarouselApi}
-                        opts={{
-                            align: "start",
-                            loop: true,
-                        }}
+                        opts={{ align: "start", loop: true }}
                     >
                         <CarouselContent className="-ml-2 md:-ml-4">
                             {items.map((item, index) => {
                                 const imageUrl = getImageUrl(item);
                                 const itemTitle = getItemTitle(item);
                                 const seoUrl = getSeoUrl(item);
-
                                 return (
                                     <CarouselItem
                                         key={item.order || index}
@@ -155,35 +70,22 @@ export function NewReleasesCarousel() {
                                     >
                                         <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group h-full m-0 p-0">
                                             <Link href={seoUrl}>
-                                                <div
-                                                    className="relative w-full"
-                                                    style={{
-                                                        aspectRatio: "2/3",
-                                                    }}
-                                                >
+                                                <div className="relative w-full" style={{ aspectRatio: "2/3" }}>
                                                     {imageUrl ? (
                                                         <Image
                                                             src={imageUrl}
                                                             alt={itemTitle}
                                                             fill
                                                             className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                                            priority={
-                                                                index === 0
-                                                            }
+                                                            priority={index === 0}
                                                         />
                                                     ) : (
                                                         <div className="w-full h-full bg-linear-to-br from-gray-700 to-gray-900 flex items-center justify-center">
-                                                            <span className="text-gray-400 text-center px-2">
-                                                                {itemTitle}
-                                                            </span>
+                                                            <span className="text-gray-400 text-center px-2">{itemTitle}</span>
                                                         </div>
                                                     )}
-
-                                                    {/* Overlay with title - Show on hover */}
                                                     <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
-                                                        <h3 className="text-white font-bold text-sm line-clamp-2">
-                                                            {itemTitle}
-                                                        </h3>
+                                                        <h3 className="text-white font-bold text-sm line-clamp-2">{itemTitle}</h3>
                                                     </div>
                                                 </div>
                                             </Link>
@@ -195,9 +97,8 @@ export function NewReleasesCarousel() {
                     </Carousel>
                 </div>
 
-                {/* Next Arrow Button */}
                 <button
-                    onClick={handleNext}
+                    onClick={() => carouselApi?.scrollNext()}
                     className="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-[#ec4899]/80 hover:bg-[#ec4899] text-white transition-all duration-300"
                     aria-label="Next slide"
                 >

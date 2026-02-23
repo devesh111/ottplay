@@ -186,3 +186,22 @@ body {
     left: -1px;
     height: 100%;
 }
+/* ── video.js: force the player and its tech to fill the container ── */
+.video-js {
+    width: 100% !important;
+    height: 100% !important;
+}
+.video-js .vjs-tech {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+}
+/* hide video.js's own loading spinner & big play button since we have custom controls */
+.video-js .vjs-loading-spinner,
+.video-js .vjs-big-play-button,
+.video-js .vjs-control-bar {
+    display: none !important;
+}

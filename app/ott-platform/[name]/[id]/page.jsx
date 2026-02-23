@@ -1,46 +1,34 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchProviderWidgets } from "@/lib/api/ottplay";
 import { useParams } from "next/navigation";
-import LoadingSkeleton from "@/components/layout/LoadingSkeleton";
+import { fetchProviderWidgets, fetchProviderCarouselItems } from "@/lib/api/ottplay";
 import ErrorDisplay from "@/components/layout/ErrorDisplay";
+import LoadingSkeleton from "@/components/layout/LoadingSkeleton";
 import { ProviderWidgetCarousel } from "@/components/provider/ProviderWidgetsCarousel";
 import ProviderFeaturedCarousel from "@/components/provider/ProviderFeaturedCarousel";
 import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
+    Breadcrumb, BreadcrumbItem, BreadcrumbLink,
+    BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-const OttProviderPage = () => {
-    const params = useParams();
+export default function OttProviderPage() {
+    const { name, id } = useParams();
+    const [featuredItems, setFeaturedItems] = useState([]);
     const [widgetList, setWidgetList] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [featuredItem, setFeaturedItem] = useState({});
-    const [title, setTitle] = useState("");
-
-    const name = params.name;
-    const id = params.id;
 
     useEffect(() => {
-        const fetWidgetList = async () => {
+        const load = async () => {
             try {
                 setLoading(true);
-                setError(null);
-                setTitle(name);
+                const menu = `${name}/${id}`;
 
-                const response = await fetchProviderWidgets({
-                    platform: "web",
-                    menu: name + "/" + id,
-                });
-                const wList = response?.result?.[0].active;
-                const activeWidgets = wList.map((w) => ({
-                    module_name: `${name}/${id}`,
+                const response = await fetchProviderWidgets({ platform: "web", menu });
+                const active = response?.result?.[0]?.active ?? [];
+                const activeWidgets = active.map((w) => ({
+                    module_name: menu,
                     platform: "web",
                     section: w.section,
                     limit: 25,
@@ -51,107 +39,66 @@ const OttProviderPage = () => {
                     ottplay_id: w.ottplay_id,
                 }));
 
-                if (activeWidgets) {
-                    const featuredWidgetItem = activeWidgets.filter(
-                        (item) => item.title === "Mix Search",
-                    );
-                    const remainingItems = activeWidgets.filter(
-                        (item) => item.title !== "Mix Search",
-                    );
-                    setWidgetList(remainingItems);
-                    if (featuredWidgetItem.length > 0) {
-                        setFeaturedItem(featuredWidgetItem[0]);
-                    }
-                }
-            } catch (error) {
-                setError(
-                    error.response?.data?.message ||
-                        "Failed to load movie details",
+                const featuredWidget = activeWidgets.find((w) => w.title === "Mix Search");
+                const remaining = activeWidgets.filter((w) => w.title !== "Mix Search");
+
+                // Fetch featured + all widget carousels in parallel
+                const [featuredRes, ...widgetResults] = await Promise.allSettled([
+                    featuredWidget ? fetchProviderCarouselItems(featuredWidget) : Promise.resolve(null),
+                    ...remaining.map((w) => fetchProviderCarouselItems(w)),
+                ]);
+
+                setFeaturedItems(
+                    featuredRes.status === "fulfilled" ? featuredRes.value?.rank ?? [] : []
                 );
+                setWidgetList(
+                    remaining.map((w, i) => ({
+                        ...w,
+                        items: widgetResults[i]?.status === "fulfilled" ? widgetResults[i].value?.rank ?? [] : [],
+                        widgetTitle: widgetResults[i]?.status === "fulfilled" ? widgetResults[i].value?.title ?? w.title : w.title,
+                    }))
+                );
+            } catch (err) {
+                setError("Failed to load provider page");
             } finally {
                 setLoading(false);
             }
         };
-        fetWidgetList();
-    }, []);
+        load();
+    }, [name, id]);
 
-    if (loading) {
-        return <LoadingSkeleton />;
-    }
-
-    /**
-     * Render error state
-     * Shows error message if widget list fetch fails
-     */
-    if (error) {
-        return <ErrorDisplay />;
-    }
+    if (loading) return <LoadingSkeleton />;
+    if (error) return <ErrorDisplay />;
 
     return (
         <main className="min-h-screen bg-background">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
                 <Breadcrumb>
                     <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                        </BreadcrumbItem>
+                        <BreadcrumbItem><BreadcrumbLink href="/">Home</BreadcrumbLink></BreadcrumbItem>
                         <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/">Premium</BreadcrumbLink>
-                        </BreadcrumbItem>
+                        <BreadcrumbItem><BreadcrumbLink href="/">Premium</BreadcrumbLink></BreadcrumbItem>
                         <BreadcrumbSeparator />
-                        {title && (
-                            <BreadcrumbItem>
-                                <BreadcrumbPage>{title}</BreadcrumbPage>
-                            </BreadcrumbItem>
-                        )}
+                        <BreadcrumbItem><BreadcrumbPage>{name}</BreadcrumbPage></BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
             </div>
-            {/* Featured Carousel Section */}
-            {featuredItem && (
+
+            {featuredItems.length > 0 && (
                 <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 pb-10 pt-5 bg-section">
                     <div className="overflow-hidden">
-                        <ProviderFeaturedCarousel
-                            params={{
-                                module_name: featuredItem.module_name,
-                                platform: featuredItem.platform,
-                                section: featuredItem.section,
-                                limit: featuredItem.limit,
-                                title: featuredItem.title,
-                                pin_it: featuredItem.pin_it,
-                                template_name: featuredItem.template_name,
-                                provider_id: featuredItem.provider_id,
-                            }}
-                        />
+                        <ProviderFeaturedCarousel items={featuredItems} />
                     </div>
                 </section>
             )}
 
-            {widgetList &&
-                widgetList.map((widget, index) => (
-                    <section
-                        key={index}
-                        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 pt-10"
-                    >
-                        <div className="overflow-hidden">
-                            <ProviderWidgetCarousel
-                                params={{
-                                    module_name: widget.module_name,
-                                    platform: widget.platform,
-                                    section: widget.section,
-                                    limit: widget.limit,
-                                    title: widget.title,
-                                    pin_it: widget.pin_it,
-                                    template_name: widget.template_name,
-                                    provider_id: widget.provider_id,
-                                }}
-                            />
-                        </div>
-                    </section>
-                ))}
+            {widgetList.map((widget, index) => (
+                <section key={index} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 pt-10">
+                    <div className="overflow-hidden">
+                        <ProviderWidgetCarousel items={widget.items} widgetTitle={widget.widgetTitle} />
+                    </div>
+                </section>
+            ))}
         </main>
     );
-};
-
-export default OttProviderPage;
+}
