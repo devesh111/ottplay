@@ -109,7 +109,7 @@ export default function Home() {
                     </h2>
                     <p className="text-lg text-[#9ca3af] mb-8">
                         Join millions of users streaming unlimited movies and TV
-                        shows with OTTplay
+                        shows with OTTplay 
                     </p>
                     <button className="px-8 py-4 rounded-lg bg-linear-to-r from-[#ec4899] to-[#a855f7] text-white font-bold text-lg hover:shadow-2xl hover:shadow-[#ec4899]/50 transition-all transform hover:scale-105">
                         Subscribe Now
