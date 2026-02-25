@@ -50,14 +50,16 @@ export default function OttProviderPage() {
                     template_name: w.template_name,
                     provider_id: w.provider_id,
                     ottplay_id: w.ottplay_id,
+                    content_type: w.content_type,
                 }));
 
                 const featuredWidget = activeWidgets.find(
                     (w) => w.title === "Mix Search",
                 );
                 const remaining = activeWidgets.filter(
-                    (w) => w.title !== "Mix Search",
+                    (w) => w.title !== "Mix Search" && w.pin_it === true && w.content_type !== "provider_channel",
                 );
+                console.log(remaining);
 
                 // Step 2: Only the featured carousel is fetched eagerly (above the fold)
                 if (featuredWidget) {
