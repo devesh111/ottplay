@@ -2,20 +2,28 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { fetchProviderWidgets, fetchProviderCarouselItems } from "@/lib/api/ottplay";
+import {
+    fetchProviderWidgets,
+    fetchProviderCarouselItems,
+} from "@/lib/api/ottplay";
 import ErrorDisplay from "@/components/layout/ErrorDisplay";
 import LoadingSkeleton from "@/components/layout/LoadingSkeleton";
 import { ProviderWidgetCarousel } from "@/components/provider/ProviderWidgetsCarousel";
 import ProviderFeaturedCarousel from "@/components/provider/ProviderFeaturedCarousel";
 import {
-    Breadcrumb, BreadcrumbItem, BreadcrumbLink,
-    BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator,
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import LazyProviderWidget from "@/components/provider/Lazyproviderwidget";
 
 export default function OttProviderPage() {
     const { name, id } = useParams();
     const [featuredItems, setFeaturedItems] = useState([]);
-    const [widgetList, setWidgetList] = useState([]);
+    const [widgetMeta, setWidgetMeta] = useState([]); // Only metadata, no items fetched yet
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -25,8 +33,13 @@ export default function OttProviderPage() {
                 setLoading(true);
                 const menu = `${name}/${id}`;
 
-                const response = await fetchProviderWidgets({ platform: "web", menu });
+                // Step 1: Fetch the widget list (lightweight — just metadata)
+                const response = await fetchProviderWidgets({
+                    platform: "web",
+                    menu,
+                });
                 const active = response?.result?.[0]?.active ?? [];
+
                 const activeWidgets = active.map((w) => ({
                     module_name: menu,
                     platform: "web",
@@ -39,31 +52,30 @@ export default function OttProviderPage() {
                     ottplay_id: w.ottplay_id,
                 }));
 
-                const featuredWidget = activeWidgets.find((w) => w.title === "Mix Search");
-                const remaining = activeWidgets.filter((w) => w.title !== "Mix Search");
-
-                // Fetch featured + all widget carousels in parallel
-                const [featuredRes, ...widgetResults] = await Promise.allSettled([
-                    featuredWidget ? fetchProviderCarouselItems(featuredWidget) : Promise.resolve(null),
-                    ...remaining.map((w) => fetchProviderCarouselItems(w)),
-                ]);
-
-                setFeaturedItems(
-                    featuredRes.status === "fulfilled" ? featuredRes.value?.rank ?? [] : []
+                const featuredWidget = activeWidgets.find(
+                    (w) => w.title === "Mix Search",
                 );
-                setWidgetList(
-                    remaining.map((w, i) => ({
-                        ...w,
-                        items: widgetResults[i]?.status === "fulfilled" ? widgetResults[i].value?.rank ?? [] : [],
-                        widgetTitle: widgetResults[i]?.status === "fulfilled" ? widgetResults[i].value?.title ?? w.title : w.title,
-                    }))
+                const remaining = activeWidgets.filter(
+                    (w) => w.title !== "Mix Search",
                 );
+
+                // Step 2: Only the featured carousel is fetched eagerly (above the fold)
+                if (featuredWidget) {
+                    const featuredRes = await fetchProviderCarouselItems(
+                        featuredWidget,
+                    ).catch(() => null);
+                    setFeaturedItems(featuredRes?.rank ?? []);
+                }
+
+                // Step 3: Store only metadata for the rest — they'll be fetched on scroll
+                setWidgetMeta(remaining);
             } catch (err) {
                 setError("Failed to load provider page");
             } finally {
                 setLoading(false);
             }
         };
+
         load();
     }, [name, id]);
 
@@ -75,15 +87,22 @@ export default function OttProviderPage() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
                 <Breadcrumb>
                     <BreadcrumbList>
-                        <BreadcrumbItem><BreadcrumbLink href="/">Home</BreadcrumbLink></BreadcrumbItem>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                        </BreadcrumbItem>
                         <BreadcrumbSeparator />
-                        <BreadcrumbItem><BreadcrumbLink href="/">Premium</BreadcrumbLink></BreadcrumbItem>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/">Premium</BreadcrumbLink>
+                        </BreadcrumbItem>
                         <BreadcrumbSeparator />
-                        <BreadcrumbItem><BreadcrumbPage>{name}</BreadcrumbPage></BreadcrumbItem>
+                        <BreadcrumbItem>
+                            <BreadcrumbPage>{name}</BreadcrumbPage>
+                        </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
             </div>
 
+            {/* Featured carousel — fetched eagerly, always above the fold */}
             {featuredItems.length > 0 && (
                 <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 pb-10 pt-5 bg-section">
                     <div className="overflow-hidden">
@@ -92,10 +111,18 @@ export default function OttProviderPage() {
                 </section>
             )}
 
-            {widgetList.map((widget, index) => (
-                <section key={index} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 pt-10">
+            {/*
+                Remaining widgets — each one is a LazyProviderWidget that uses
+                IntersectionObserver to trigger its own API call only when it
+                scrolls into (or near) the viewport.
+            */}
+            {widgetMeta.map((widget, index) => (
+                <section
+                    key={`${widget.section}-${index}`}
+                    className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 pt-10"
+                >
                     <div className="overflow-hidden">
-                        <ProviderWidgetCarousel items={widget.items} widgetTitle={widget.widgetTitle} />
+                        <LazyProviderWidget widget={widget} />
                     </div>
                 </section>
             ))}
