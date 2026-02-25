@@ -1,4 +1,21 @@
 "use client";
+import {
+    Captions,
+    Check,
+    ChevronLeft,
+    Gauge,
+    Maximize2,
+    Minimize2,
+    Pause,
+    Play,
+    Redo,
+    Settings,
+    Undo,
+    Volume1,
+    Volume2,
+    VolumeX,
+    X,
+} from "lucide-react";
 import { useEffect, useRef, useState, useCallback } from "react";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
@@ -25,188 +42,6 @@ const SPEEDS = [
     { label: "1.75x", value: 1.75 },
     { label: "2x", value: 2 },
 ];
-
-/* ── SVG icons (no external dep) ───────────────────────────────────── */
-const Svg = ({ children, size = 24, ...p }) => (
-    <svg
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        {...p}
-    >
-        {children}
-    </svg>
-);
-
-const IcoBack = () => (
-    <Svg>
-        <polyline points="15 18 9 12 15 6" />
-    </Svg>
-);
-const IcoPlay = () => (
-    <Svg>
-        <polygon points="5 3 19 12 5 21" fill="currentColor" stroke="none" />
-    </Svg>
-);
-const IcoPause = () => (
-    <Svg>
-        <line x1="6" y1="4" x2="6" y2="20" strokeWidth="3" />
-        <line x1="18" y1="4" x2="18" y2="20" strokeWidth="3" />
-    </Svg>
-);
-const IcoFS = () => (
-    <Svg size={20}>
-        <polyline points="15 3 21 3 21 9" />
-        <polyline points="9 21 3 21 3 15" />
-        <line x1="21" y1="3" x2="14" y2="10" />
-        <line x1="3" y1="21" x2="10" y2="14" />
-    </Svg>
-);
-const IcoExitFS = () => (
-    <Svg size={20}>
-        <polyline points="4 14 10 14 10 20" />
-        <polyline points="20 10 14 10 14 4" />
-        <line x1="10" y1="14" x2="3" y2="21" />
-        <line x1="21" y1="3" x2="14" y2="10" />
-    </Svg>
-);
-const IcoVol = () => (
-    <Svg size={20}>
-        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-        <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-        <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-    </Svg>
-);
-const IcoMute = () => (
-    <Svg size={20}>
-        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-        <line x1="23" y1="9" x2="17" y2="15" />
-        <line x1="17" y1="9" x2="23" y2="15" />
-    </Svg>
-);
-const IcoLang = () => (
-    <Svg size={20}>
-        <rect x="2" y="5" width="20" height="14" rx="2" />
-        <line x1="7" y1="11" x2="13" y2="11" />
-        <line x1="7" y1="15" x2="17" y2="15" />
-        <line x1="15" y1="11" x2="17" y2="11" />
-    </Svg>
-);
-const IcoGear = () => (
-    <Svg size={20}>
-        <circle cx="12" cy="12" r="3" />
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-    </Svg>
-);
-const IcoSpeed = () => (
-    <Svg size={20}>
-        <circle cx="12" cy="12" r="10" />
-        <polyline points="12 6 12 12 16 14" />
-    </Svg>
-);
-const IcoCheck = () => (
-    <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#22c55e"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-    >
-        <polyline points="20 6 9 17 4 12" />
-    </svg>
-);
-const IcoClose = () => (
-    <Svg size={18}>
-        <line x1="18" y1="6" x2="6" y2="18" />
-        <line x1="6" y1="6" x2="18" y2="18" />
-    </Svg>
-);
-
-/* ── Rewind / Forward icons with "10" text baked in ─────────────────── */
-const IcoRewind = ({ size = 40 }) => (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
-        <circle
-            cx="20"
-            cy="20"
-            r="17"
-            stroke="white"
-            strokeOpacity="0.7"
-            strokeWidth="1.5"
-        />
-        <path
-            d="M22 13 L14 20 L22 27"
-            stroke="white"
-            strokeOpacity="0.9"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        />
-        <path
-            d="M14 20 H26"
-            stroke="white"
-            strokeOpacity="0.9"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-        />
-        <text
-            x="22"
-            y="24"
-            fill="white"
-            fillOpacity="0.9"
-            fontSize="8"
-            fontFamily="sans-serif"
-            textAnchor="middle"
-        >
-            10
-        </text>
-    </svg>
-);
-const IcoForward = ({ size = 40 }) => (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
-        <circle
-            cx="20"
-            cy="20"
-            r="17"
-            stroke="white"
-            strokeOpacity="0.7"
-            strokeWidth="1.5"
-        />
-        <path
-            d="M18 13 L26 20 L18 27"
-            stroke="white"
-            strokeOpacity="0.9"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        />
-        <path
-            d="M26 20 H14"
-            stroke="white"
-            strokeOpacity="0.9"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-        />
-        <text
-            x="18"
-            y="24"
-            fill="white"
-            fillOpacity="0.9"
-            fontSize="8"
-            fontFamily="sans-serif"
-            textAnchor="middle"
-        >
-            10
-        </text>
-    </svg>
-);
 
 /* ── Vertical volume slider ─────────────────────────────────────────── */
 function VolumePanel({ volume, onChange }) {
@@ -307,7 +142,7 @@ function QualityPanel({ qualities, current, onSelect, onClose }) {
                     onClick={onClose}
                     className="text-white/60 hover:text-white"
                 >
-                    <IcoClose />
+                    <X />
                 </button>
             </div>
             {/* options */}
@@ -336,7 +171,7 @@ function QualityPanel({ qualities, current, onSelect, onClose }) {
                             </span>
                         )}
                     </span>
-                    {q.value === current && <IcoCheck />}
+                    {q.value === current && <Check />}
                 </button>
             ))}
         </div>
@@ -357,7 +192,7 @@ function SpeedPanel({ current, onApply, onClose }) {
                 className="flex items-center gap-3 px-5 py-4"
                 style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}
             >
-                <IcoSpeed />
+                <Gauge />
                 <span className="text-white font-semibold flex-1">
                     Playback Speed
                 </span>
@@ -365,7 +200,7 @@ function SpeedPanel({ current, onApply, onClose }) {
                     onClick={onClose}
                     className="text-white/60 hover:text-white"
                 >
-                    <IcoClose />
+                    <X />
                 </button>
             </div>
             {/* list */}
@@ -381,7 +216,7 @@ function SpeedPanel({ current, onApply, onClose }) {
                         >
                             {s.label}
                         </span>
-                        {s.value === sel && <IcoCheck />}
+                        {s.value === sel && <Check />}
                     </button>
                 ))}
             </div>
@@ -649,7 +484,7 @@ export function VideoPlayer({
                     className="text-white hover:text-white/70 transition-colors mt-0.5 pointer-events-auto"
                     onClick={onClose}
                 >
-                    <IcoBack />
+                    <ChevronLeft />
                 </button>
                 {/* title + cert */}
                 <div className="flex flex-col gap-1.5">
@@ -669,11 +504,6 @@ export function VideoPlayer({
                         </span>
                     )}
                 </div>
-                {/* drag handle — right edge */}
-                <div className="ml-auto flex items-center gap-0.5 pt-1 opacity-40 pointer-events-none">
-                    <div className="w-0.5 h-5 rounded bg-white" />
-                    <div className="w-0.5 h-5 rounded bg-white" />
-                </div>
             </div>
 
             {/* ══════════ CENTRE CONTROLS ══════════ */}
@@ -689,7 +519,7 @@ export function VideoPlayer({
                         resetHide();
                     }}
                 >
-                    <IcoRewind size={42} />
+                    <Undo size={40} /> <span className="text-xs">- 10</span>
                 </button>
                 <button
                     className="pointer-events-auto hover:scale-110 transition-transform active:scale-95"
@@ -699,22 +529,7 @@ export function VideoPlayer({
                         resetHide();
                     }}
                 >
-                    {playing ? (
-                        <IcoPause />
-                    ) : (
-                        <svg
-                            width={42}
-                            height={42}
-                            viewBox="0 0 42 42"
-                            fill="none"
-                        >
-                            <polygon
-                                points="11 7 35 21 11 35"
-                                fill="white"
-                                fillOpacity="0.85"
-                            />
-                        </svg>
-                    )}
+                    {playing ? <Pause size={40} /> : <Play size={40} />}
                 </button>
                 <button
                     className="pointer-events-auto hover:scale-110 transition-transform active:scale-95"
@@ -724,7 +539,7 @@ export function VideoPlayer({
                         resetHide();
                     }}
                 >
-                    <IcoForward size={42} />
+                    <Redo size={40} /> <span className="text-xs">+ 10</span>
                 </button>
             </div>
 
@@ -803,7 +618,13 @@ export function VideoPlayer({
                             onClick={() => togglePanel("volume")}
                             className="flex flex-col items-center gap-1 hover:opacity-80 transition-opacity"
                         >
-                            {muted || effVol === 0 ? <IcoMute /> : <IcoVol />}
+                            {muted || effVol === 0 ? (
+                                <VolumeX />
+                            ) : effVol < 0.5 ? (
+                                <Volume1 />
+                            ) : (
+                                <Volume2 />
+                            )}
                             <span className="text-white text-[10px] tracking-wide">
                                 Volume
                             </span>
@@ -811,7 +632,7 @@ export function VideoPlayer({
 
                         {/* Language */}
                         <button className="flex flex-col items-center gap-1 hover:opacity-80 transition-opacity relative">
-                            <IcoLang />
+                            <Captions />
                             <span className="text-white text-[10px] tracking-wide">
                                 Language
                             </span>
@@ -834,29 +655,28 @@ export function VideoPlayer({
                                     HD
                                 </span>
                             )}
-                            <IcoGear />
+                            <Settings />
                             <span className="text-white text-[10px] tracking-wide">
                                 Settings
                             </span>
                             <div className="relative">
-                            {panel === "quality" && (
-                                <QualityPanel
-                                    qualities={qualities}
-                                    current={curQuality}
-                                    onSelect={selectQuality}
-                                    onClose={() => setPanel(null)}
-                                />
-                            )}
-                        </div>
+                                {panel === "quality" && (
+                                    <QualityPanel
+                                        qualities={qualities}
+                                        current={curQuality}
+                                        onSelect={selectQuality}
+                                        onClose={() => setPanel(null)}
+                                    />
+                                )}
+                            </div>
                         </button>
-                        
 
                         {/* Speed */}
                         <button
                             onClick={() => togglePanel("speed")}
                             className="flex flex-col items-center gap-1 hover:opacity-80 transition-opacity"
                         >
-                            <IcoSpeed />
+                            <Gauge />
                             <span className="text-white text-[10px] tracking-wide">
                                 Speed
                             </span>
@@ -868,7 +688,7 @@ export function VideoPlayer({
                         onClick={toggleFS}
                         className="flex flex-col items-center justify-center gap-1 hover:opacity-80 transition-opacity"
                     >
-                        {isFS ? <IcoExitFS /> : <IcoFS />}
+                        {isFS ? <Minimize2 /> : <Maximize2 />}
                         <span className="text-white text-[10px] tracking-wide">
                             {isFS ? "Exit" : "Full Screen"}
                         </span>
