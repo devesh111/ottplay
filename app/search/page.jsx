@@ -36,6 +36,7 @@ export default function SearchPage() {
                 setLoading(true);
                 setError(null);
                 const response = await fetchSearchContent({ query });
+                console.log(response);
                 setResults(
                     (response.result || []).map((item) => ({
                         id: item._id || item.ottplay_id || item.name,

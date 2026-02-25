@@ -78,6 +78,13 @@ export function SearchAutocomplete() {
         }, 300);
     };
 
+    const handleResultClick = (result) => {
+        console.log(result);
+        router.push(result.url);
+        setQuery("");
+        setIsOpen(false);
+    };
+
     const handleSearchSubmit = () => {
         if (query.trim()) {
             setTimeout(() => {
@@ -144,9 +151,7 @@ export function SearchAutocomplete() {
             document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // Display maximum 5 results in the dropdown
-    const displayedResults = results.slice(0, 5);
-    const hasMoreResults = results.length > 5;
+    const displayedResults = results;
 
     return (
         <div className="w-full max-w-2xl mx-auto relative">
@@ -202,7 +207,9 @@ export function SearchAutocomplete() {
                                                     }`}
                                                     onClick={() => {
                                                         setQuery(result.title);
-                                                        handleSearchSubmit();
+                                                        handleResultClick(
+                                                            result,
+                                                        );
                                                     }}
                                                 >
                                                     <div className="flex items-start gap-3">
@@ -247,7 +254,7 @@ export function SearchAutocomplete() {
                                 </ScrollArea>
 
                                 {/* "See all search results" Button */}
-                                <div className="border-t">
+                                <div className="border-t pb-5">
                                     <Button
                                         onClick={handleSearchSubmit}
                                         variant="outline"
@@ -256,14 +263,6 @@ export function SearchAutocomplete() {
                                         See all search results for "{query}"
                                     </Button>
                                 </div>
-
-                                {/* Info about additional results */}
-                                {hasMoreResults && (
-                                    <div className="px-3 py-2 mb-3 text-xs text-muted-foreground text-center border-t">
-                                        {results.length - 5} more results
-                                        available
-                                    </div>
-                                )}
                             </>
                         )}
                     </Card>
