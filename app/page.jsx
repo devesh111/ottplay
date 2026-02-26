@@ -34,7 +34,6 @@ export default function Home() {
                     ottplay_id: w.ottplay_id,
                     content_type: w.content_type,
                 }));
-                console.log(allWidgets);
                 // Step 2: Featured carousel ("Mix Search") loaded eagerly — it's above the fold
                 const featuredWidget = allWidgets.find(
                     (w) =>
@@ -55,7 +54,13 @@ export default function Home() {
                     const featuredRes = await fetchCarouselItems(
                         featuredWidget,
                     ).catch(() => null);
-                    setFeaturedItems(featuredRes?.rank ?? []);
+                    console.log("carousel items");
+                    console.log(featuredRes);
+                    const featuredCItems = featuredRes?.rank.filter(
+                        (w) => 
+                            w.content_type !== "banner"
+                    );
+                    setFeaturedItems(featuredCItems ?? []);
                 }
 
                 // Step 3: Store rest as metadata only — LazyHomeWidget fetches each on scroll
