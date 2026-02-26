@@ -13,7 +13,7 @@ import { fetchEpisodes } from "@/lib/api/ottplay";
  * page/season so there is no loading flash on first render.
  * Subsequent "load more" and season changes fetch via /api/episodes.
  */
-export default function Episodes({ seasonNumber, seoUrl, initialEpisodes }) {
+export default function Episodes({ seasonNumber, seoUrl, initialEpisodes, setIsOpen }) {
     const [allEpisodes, setAllEpisodes] = useState(
         initialEpisodes?.episodes ?? []
     );
@@ -74,15 +74,15 @@ export default function Episodes({ seasonNumber, seoUrl, initialEpisodes }) {
                             className="py-1 pl-3 pr-5 hover:shadow-lg transition-shadow duration-200 bg-episode-card overflow-hidden rounded-sm"
                         >
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                                <div className="flex items-center gap-4">
+                                <div className="flex flex-col sm:flex-row items-center gap-4">
                                     <div className="flex-none">
                                         <img
                                             src={episode.backdrop_url}
-                                            className="w-45 h-25.25 rounded-sm"
+                                            className="w-full sm:w-45 h-full sm:h-25.25 rounded-sm"
                                             alt={episode.name}
                                         />
                                     </div>
-                                    <div className="flex flex-col gap-4 mb-4">
+                                    <div className="flex w-full flex-col gap-4 mb-4">
                                         <div className="flex-1">
                                             <h3 className="text-sm md:text-md font-semibold line-clamp-2 text-white">
                                                 {episode.name}
@@ -109,8 +109,10 @@ export default function Episodes({ seasonNumber, seoUrl, initialEpisodes }) {
                                         )}
                                     </div>
                                 </div>
-                                <div className="space-y-3 text-sm text-right">
-                                    <Button className="text-white">
+                                <div className="space-y-3 text-sm text-left sm:text-right mb-3">
+                                    <Button
+                                    onClick={()=>setIsOpen(true)}
+                                    className="text-white">
                                         <Play fill="white" />
                                         Play
                                     </Button>

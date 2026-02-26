@@ -3,8 +3,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import {
-    Breadcrumb, BreadcrumbItem, BreadcrumbLink,
-    BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator,
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { fetchMovieDetails } from "@/lib/api/ottplay";
 import Link from "next/link";
@@ -29,16 +33,18 @@ function convertDateTime(dateTimeString) {
 
 export default function MoviePage() {
     const { name, id } = useParams();
-    const [loading,  setLoading]  = useState(true);
-    const [error,    setError]    = useState(null);
-    const [movie,    setMovie]    = useState(null);
-    const [isOpen,   setIsOpen]   = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [movie, setMovie] = useState(null);
+    const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
         const load = async () => {
             try {
                 setLoading(true);
-                const response = await fetchMovieDetails({ seoUrl: `${name}/${id}` });
+                const response = await fetchMovieDetails({
+                    seoUrl: `${name}/${id}`,
+                });
                 setMovie(response?.movies?.[0] ?? null);
             } catch {
                 setError("Failed to load movie details");
@@ -56,7 +62,9 @@ export default function MoviePage() {
         } else {
             document.body.style.overflow = "";
         }
-        return () => { document.body.style.overflow = ""; };
+        return () => {
+            document.body.style.overflow = "";
+        };
     }, [isOpen]);
 
     if (loading) return <LoadingSkeleton />;
@@ -69,12 +77,16 @@ export default function MoviePage() {
         );
     }
 
-    const movieGenres    = movie.genres?.map((x) => x.name).join(" • ");
-    const certification  = movie.certifications?.[0]?.certification;
-    const primaryLanguage  = movie.primary_language?.name;
-    const otherLanguages   = movie.other_languages?.map((x) => x.name).join(" • ");
-    const movieLanguages   = otherLanguages ? `${primaryLanguage} • ${otherLanguages}` : primaryLanguage;
-    const provider   = movie.where_to_watch?.[0]?.provider;
+    const movieGenres = movie.genres?.map((x) => x.name).join(" • ");
+    const certification = movie.certifications?.[0]?.certification;
+    const primaryLanguage = movie.primary_language?.name;
+    const otherLanguages = movie.other_languages
+        ?.map((x) => x.name)
+        .join(" • ");
+    const movieLanguages = otherLanguages
+        ? `${primaryLanguage} • ${otherLanguages}`
+        : primaryLanguage;
+    const provider = movie.where_to_watch?.[0]?.provider;
     const moviePoster = movie.backdrops?.[0]?.url;
 
     return (
@@ -98,11 +110,19 @@ export default function MoviePage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
                     <Breadcrumb>
                         <BreadcrumbList>
-                            <BreadcrumbItem><BreadcrumbLink href="/">Home</BreadcrumbLink></BreadcrumbItem>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                            </BreadcrumbItem>
                             <BreadcrumbSeparator />
-                            <BreadcrumbItem><BreadcrumbLink href="/movies">Movies</BreadcrumbLink></BreadcrumbItem>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href="/movies">
+                                    Movies
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
                             <BreadcrumbSeparator />
-                            <BreadcrumbItem><BreadcrumbPage>{movie.name}</BreadcrumbPage></BreadcrumbItem>
+                            <BreadcrumbItem>
+                                <BreadcrumbPage>{movie.name}</BreadcrumbPage>
+                            </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
                 </div>
@@ -111,34 +131,81 @@ export default function MoviePage() {
                     <div className="flex flex-col md:flex-row gap-5 md:gap-20">
                         {/* Left */}
                         <div className="w-full md:w-1/2 order-2 md:order-1">
-                            <h1 className="text-3xl text-white font-semibold mb-2">{movie.name}</h1>
-                            {movieGenres && <p className="text-sm tracking-wide">{movieGenres}</p>}
+                            <h1 className="text-3xl text-white font-semibold mb-2">
+                                {movie.name}
+                            </h1>
+                            {movieGenres && (
+                                <p className="text-sm tracking-wide">
+                                    {movieGenres}
+                                </p>
+                            )}
 
                             <div className="flex gap-2 max-w-lg mt-3 items-center justify-start text-center">
                                 {provider && (
                                     <div className="rounded-md text-center">
-                                        <Link href={`/ott-platform/${provider.seourl}`}>
-                                            <img src={provider.icon_url} alt={provider.name} className="w-10 rounded-md mx-auto" />
+                                        <Link
+                                            href={`/ott-platform/${provider.seourl}`}
+                                        >
+                                            <img
+                                                src={provider.icon_url}
+                                                alt={provider.name}
+                                                className="w-10 rounded-md mx-auto"
+                                            />
                                         </Link>
                                     </div>
                                 )}
                                 <div className="border border-border-bl p-2 flex gap-1 items-center rounded-md">
-                                    <span className="text-lg text-white font-bold">{movie.ottplay_rating} </span>
-                                    <span className="text-xs font-bold leading-tight tracking-wide">OTTPlay Rating</span>
+                                    <span className="text-lg text-white font-bold">
+                                        {movie.ottplay_rating}{" "}
+                                    </span>
+                                    <span className="text-xs font-bold leading-tight tracking-wide">
+                                        OTTPlay Rating
+                                    </span>
                                 </div>
-                                <div className="border border-border-bl p-2 font-bold text-sm rounded-md">{movie.release_year}</div>
-                                {certification && <div className="border border-border-bl p-2 text-xs font-bold rounded-md">{certification}</div>}
-                                {movie.runTime && <div className="border border-border-bl p-2 text-xs font-bold rounded-md">{convertRunTime(movie.runTime)}</div>}
+                                <div className="border border-border-bl p-2 font-bold text-sm rounded-md">
+                                    {movie.release_year}
+                                </div>
+                                {certification && (
+                                    <div className="border border-border-bl p-2 text-xs font-bold rounded-md">
+                                        {certification}
+                                    </div>
+                                )}
+                                {movie.runTime && (
+                                    <div className="border border-border-bl p-2 text-xs font-bold rounded-md">
+                                        {convertRunTime(movie.runTime)}
+                                    </div>
+                                )}
                             </div>
 
                             <div className="text-sm tracking-wide mt-5 mb-5 leading-relaxed">
-                                {movieLanguages && <p><strong>Languages: </strong>{movieLanguages}</p>}
-                                {movie.release_date && <p><strong>Release Date: </strong>{convertDateTime(movie.release_date)}</p>}
-                                {movie.onboarding_updated_on && <p><strong>OTT Release Date: </strong>{convertDateTime(movie.onboarding_updated_on)}</p>}
+                                {movieLanguages && (
+                                    <p>
+                                        <strong>Languages: </strong>
+                                        {movieLanguages}
+                                    </p>
+                                )}
+                                {movie.release_date && (
+                                    <p>
+                                        <strong>Release Date: </strong>
+                                        {convertDateTime(movie.release_date)}
+                                    </p>
+                                )}
+                                {movie.onboarding_updated_on && (
+                                    <p>
+                                        <strong>OTT Release Date: </strong>
+                                        {convertDateTime(
+                                            movie.onboarding_updated_on,
+                                        )}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="tracking-wide mt-5 text-md text-white">
-                                {parse(DOMPurify.sanitize(movie.full_synopsis ?? ""))}
+                                {parse(
+                                    DOMPurify.sanitize(
+                                        movie.full_synopsis ?? "",
+                                    ),
+                                )}
                             </div>
 
                             <Button
@@ -151,7 +218,13 @@ export default function MoviePage() {
 
                         {/* Right */}
                         <div className="md:w-1/2 order-1 md:order-2 relative movie-details-poster-image">
-                            {moviePoster && <img src={moviePoster} alt={movie.name} className="w-full h-auto" />}
+                            {moviePoster && (
+                                <img
+                                    src={moviePoster}
+                                    alt={movie.name}
+                                    className="w-full h-auto"
+                                />
+                            )}
                         </div>
                     </div>
                 </section>
