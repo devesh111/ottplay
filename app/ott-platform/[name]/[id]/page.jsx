@@ -8,7 +8,6 @@ import {
 } from "@/lib/api/ottplay";
 import ErrorDisplay from "@/components/layout/ErrorDisplay";
 import LoadingSkeleton from "@/components/layout/LoadingSkeleton";
-import { ProviderWidgetCarousel } from "@/components/provider/ProviderWidgetsCarousel";
 import ProviderFeaturedCarousel from "@/components/provider/ProviderFeaturedCarousel";
 import {
     Breadcrumb,
@@ -54,10 +53,17 @@ export default function OttProviderPage() {
                 }));
 
                 const featuredWidget = activeWidgets.find(
-                    (w) => w.title === "Mix Search",
+                    (w) => w.title === "Mix Search" || 
+                    w.title === "Mix Carousel" || 
+                    w.title === "mix search",
                 );
                 const remaining = activeWidgets.filter(
-                    (w) => w.title !== "Mix Search" && w.pin_it === true && w.content_type !== "provider_channel",
+                    (w) => w.title !== "Mix Search" && 
+                    w.title !== "mix search" && 
+                    w.pin_it === true && 
+                    w.title !== "Mix Carousel" && 
+                    w.content_type !== "provider_channel" &&
+                    w.content_type !== "live_tv",
                 );
                 console.log(remaining);
 

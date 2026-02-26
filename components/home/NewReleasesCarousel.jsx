@@ -15,7 +15,10 @@ import { useState } from "react";
  * NewReleasesCarousel — Client Component (interactive only).
  * Receives `items` as a prop from the Server Component parent.
  */
-export function NewReleasesCarousel({ items = [] }) {
+export function NewReleasesCarousel({
+    items = [],
+    widgetTitle = "New Releases",
+}) {
     const [carouselApi, setCarouselApi] = useState(null);
 
     const getImageUrl = (item) =>
@@ -28,8 +31,8 @@ export function NewReleasesCarousel({ items = [] }) {
         "movie" in item
             ? "/movie/" + item.movie?.seo_url
             : "show" in item
-            ? "/show/" + item.show?.seo_url
-            : "#";
+              ? "/show/" + item.show?.seo_url
+              : "#";
 
     if (items.length === 0) {
         return (
@@ -41,7 +44,9 @@ export function NewReleasesCarousel({ items = [] }) {
 
     return (
         <div className="w-full">
-            <h2 className="text-2xl font-bold text-white mb-6">New Releases</h2>
+            <h2 className="text-2xl font-bold text-white mb-6">
+                {widgetTitle}
+            </h2>
 
             <div className="relative w-full flex items-center justify-center">
                 <button
@@ -70,22 +75,33 @@ export function NewReleasesCarousel({ items = [] }) {
                                     >
                                         <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group h-full m-0 p-0">
                                             <Link href={seoUrl}>
-                                                <div className="relative w-full" style={{ aspectRatio: "2/3" }}>
+                                                <div
+                                                    className="relative w-full"
+                                                    style={{
+                                                        aspectRatio: "2/3",
+                                                    }}
+                                                >
                                                     {imageUrl ? (
                                                         <Image
                                                             src={imageUrl}
                                                             alt={itemTitle}
                                                             fill
                                                             className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                                            priority={index === 0}
+                                                            priority={
+                                                                index === 0
+                                                            }
                                                         />
                                                     ) : (
                                                         <div className="w-full h-full bg-linear-to-br from-gray-700 to-gray-900 flex items-center justify-center">
-                                                            <span className="text-gray-400 text-center px-2">{itemTitle}</span>
+                                                            <span className="text-gray-400 text-center px-2">
+                                                                {itemTitle}
+                                                            </span>
                                                         </div>
                                                     )}
                                                     <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
-                                                        <h3 className="text-white font-bold text-sm line-clamp-2">{itemTitle}</h3>
+                                                        <h3 className="text-white font-bold text-sm line-clamp-2">
+                                                            {itemTitle}
+                                                        </h3>
                                                     </div>
                                                 </div>
                                             </Link>
