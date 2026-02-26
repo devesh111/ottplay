@@ -279,7 +279,8 @@ export function VideoPlayer({
         if (!videoRef.current) return;
         const player = videojs(videoRef.current, {
             controls: false,
-            autoplay: false,
+            autoplay: true,
+            muted: false,
             preload: "auto",
             techOrder: ["html5"],
             fill: true, // makes vjs-tech fill its parent
@@ -293,14 +294,46 @@ export function VideoPlayer({
 
         player.on("play", () => setPlaying(true));
         player.on("pause", () => setPlaying(false));
-        player.on("ended", () => setPlaying(false));
-        player.on("timeupdate", () => setCurTime(player.currentTime()));
+        player.on("ended", () => {
+            setPlaying(false);
+            try {
+                localStorage.removeItem(
+                    "vp_resume_" + btoa(videoUrl).slice(0, 40),
+                );
+            } catch {}
+        });
+        player.on("timeupdate", () => {
+            const t = player.currentTime();
+            setCurTime(t);
+            // Save position every ~2 seconds (timeupdate fires ~4x/sec)
+            if (Math.floor(t) % 2 === 0) {
+                try {
+                    localStorage.setItem(
+                        "vp_resume_" + btoa(videoUrl).slice(0, 40),
+                        String(t),
+                    );
+                } catch {}
+            }
+        });
         player.on("durationchange", () => setDur(player.duration()));
         player.on("volumechange", () => {
             setVol(player.volume());
             setMuted(player.muted());
         });
         player.ready(() => {
+            // Restore last saved position if available
+            try {
+                const saved = localStorage.getItem(
+                    "vp_resume_" + btoa(videoUrl).slice(0, 40),
+                );
+                if (saved) {
+                    const t = parseFloat(saved);
+                    if (t > 5) player.currentTime(t); // skip if < 5s (treat as fresh start)
+                }
+            } catch {}
+            player.play().catch(() => {
+                // Autoplay blocked by browser — user must tap play manually
+            });
             const ql = player.qualityLevels?.();
             if (!ql) return;
             const refresh = () => {
