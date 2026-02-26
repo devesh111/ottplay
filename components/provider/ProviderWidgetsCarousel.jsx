@@ -13,9 +13,13 @@ import { useState } from "react";
 
 /**
  * ProviderWidgetCarousel — Client Component (interactive only).
- * Receives `items` and `widgetTitle` as props from the Server Component parent.
+ * Receives `items`, `widgetTitle`, and optional `seeAllUrl` as props.
  */
-export function ProviderWidgetCarousel({ items = [], widgetTitle = "" }) {
+export function ProviderWidgetCarousel({
+    items = [],
+    widgetTitle = "",
+    seeAllUrl = null,
+}) {
     const [carouselApi, setCarouselApi] = useState(null);
 
     const getImageUrl = (item) => {
@@ -34,19 +38,30 @@ export function ProviderWidgetCarousel({ items = [], widgetTitle = "" }) {
         "movie" in item
             ? "/movie/" + item.movie?.seo_url
             : "show" in item
-            ? "/show/" + item.show?.seo_url
-            : "sport" in item
-            ? "/sports/" + item.sport?.format + "/" + item.sport?.seo_url
-            : "#";
+              ? "/show/" + item.show?.seo_url
+              : "sport" in item
+                ? "/sports/" + item.sport?.format + "/" + item.sport?.seo_url
+                : "#";
 
     if (items.length === 0) return <div />;
 
     return (
         <div className="w-full">
+            {/* Title row with See All link */}
             {widgetTitle && (
-                <h2 className="text-xl font-semibold text-white mb-6 tracking-wide">
-                    {widgetTitle}
-                </h2>
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-semibold text-white tracking-wide">
+                        {widgetTitle}
+                    </h2>
+                    {seeAllUrl && (
+                        <Link
+                            href={seeAllUrl}
+                            className="text-sm font-semibold text-[#ec4899] hover:text-[#a855f7] transition-colors shrink-0 ml-4"
+                        >
+                            See All →
+                        </Link>
+                    )}
+                </div>
             )}
 
             <div className="relative w-full flex items-center justify-center">
@@ -76,22 +91,33 @@ export function ProviderWidgetCarousel({ items = [], widgetTitle = "" }) {
                                     >
                                         <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group h-full m-0 p-0">
                                             <Link href={seoUrl}>
-                                                <div className="relative w-full" style={{ aspectRatio: "2/3" }}>
+                                                <div
+                                                    className="relative w-full"
+                                                    style={{
+                                                        aspectRatio: "2/3",
+                                                    }}
+                                                >
                                                     {imageUrl ? (
                                                         <Image
                                                             src={imageUrl}
                                                             alt={itemTitle}
                                                             fill
                                                             className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                                            priority={index === 0}
+                                                            priority={
+                                                                index === 0
+                                                            }
                                                         />
                                                     ) : (
                                                         <div className="w-full h-full bg-linear-to-br from-gray-700 to-gray-900 flex items-center justify-center">
-                                                            <span className="text-gray-400 text-center px-2">{itemTitle}</span>
+                                                            <span className="text-gray-400 text-center px-2">
+                                                                {itemTitle}
+                                                            </span>
                                                         </div>
                                                     )}
                                                     <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
-                                                        <h3 className="text-white font-bold text-sm line-clamp-2">{itemTitle}</h3>
+                                                        <h3 className="text-white font-bold text-sm line-clamp-2">
+                                                            {itemTitle}
+                                                        </h3>
                                                     </div>
                                                 </div>
                                             </Link>

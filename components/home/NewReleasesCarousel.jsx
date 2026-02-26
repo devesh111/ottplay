@@ -13,11 +13,12 @@ import { useState } from "react";
 
 /**
  * NewReleasesCarousel — Client Component (interactive only).
- * Receives `items` as a prop from the Server Component parent.
+ * Receives `items`, `widgetTitle`, and optional `seeAllUrl` as props.
  */
 export function NewReleasesCarousel({
     items = [],
     widgetTitle = "New Releases",
+    seeAllUrl = null,
 }) {
     const [carouselApi, setCarouselApi] = useState(null);
 
@@ -44,9 +45,18 @@ export function NewReleasesCarousel({
 
     return (
         <div className="w-full">
-            <h2 className="text-2xl font-bold text-white mb-6">
-                {widgetTitle}
-            </h2>
+            {/* Title row with See All link */}
+            <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-white">{widgetTitle}</h2>
+                {seeAllUrl && (
+                    <Link
+                        href={seeAllUrl}
+                        className="text-sm font-semibold text-[#ec4899] hover:text-[#a855f7] transition-colors shrink-0 ml-4"
+                    >
+                        See All →
+                    </Link>
+                )}
+            </div>
 
             <div className="relative w-full flex items-center justify-center">
                 <button

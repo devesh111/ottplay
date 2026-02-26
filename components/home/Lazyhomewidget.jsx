@@ -6,6 +6,26 @@ import { NewReleasesCarousel } from "@/components/home/NewReleasesCarousel";
 import { ProviderCarousel } from "@/components/home/ProviderCarousel";
 
 /**
+ * Builds the /subs-see-all URL for a given home widget.
+ * All widget params are forwarded as query string so the See All page
+ * knows exactly which API endpoint and params to use.
+ */
+function buildSeeAllUrl(widget) {
+    const params = new URLSearchParams({
+        source: "home",
+        module_name: widget.module_name || "Subscription",
+        platform: widget.platform || "web",
+        section: widget.section || "",
+        title: widget.title || "",
+        pin_it: String(widget.pin_it ?? false),
+        template_name: widget.template_name || "",
+    });
+    if (widget.provider_id) params.set("provider_id", widget.provider_id);
+    if (widget.ottplay_id) params.set("ottplay_id", widget.ottplay_id);
+    return `/subs-see-all?${params.toString()}`;
+}
+
+/**
  * LazyHomeWidget — fetches carousel data for a single home widget
  * only when it scrolls into (or near) the viewport.
  *
@@ -19,6 +39,8 @@ export default function LazyHomeWidget({ widget }) {
     const [status, setStatus] = useState("idle"); // idle | loading | done | error
     const [items, setItems] = useState([]);
     const [widgetTitle, setWidgetTitle] = useState(widget.title ?? "");
+
+    const seeAllUrl = buildSeeAllUrl(widget);
 
     useEffect(() => {
         const el = ref.current;
@@ -42,7 +64,6 @@ export default function LazyHomeWidget({ widget }) {
                 }
             },
             {
-                // Fire 200px before the widget enters the viewport
                 rootMargin: "200px 0px",
                 threshold: 0,
             },
@@ -54,10 +75,15 @@ export default function LazyHomeWidget({ widget }) {
 
     const renderCarousel = () => {
         if (widget.template_name === "providers") {
-            return <ProviderCarousel items={items} />;
+            return <ProviderCarousel items={items} seeAllUrl={seeAllUrl} />;
         }
-        // new_releases and all other templates use the same card style
-        return <NewReleasesCarousel items={items} widgetTitle={widgetTitle} />;
+        return (
+            <NewReleasesCarousel
+                items={items}
+                widgetTitle={widgetTitle}
+                seeAllUrl={seeAllUrl}
+            />
+        );
     };
 
     return (
@@ -84,13 +110,22 @@ export default function LazyHomeWidget({ widget }) {
 function WidgetSkeleton({ title, animate = false, isProvider = false }) {
     return (
         <div>
-            {/* Title placeholder */}
-            <div
-                className={`h-7 w-48 rounded-md mb-6 bg-accent ${
-                    animate ? "animate-pulse" : "opacity-40"
-                }`}
-            >
-                {!animate && title && <span className="sr-only">{title}</span>}
+            {/* Title + See All placeholder */}
+            <div className="flex items-center justify-between mb-6">
+                <div
+                    className={`h-7 w-48 rounded-md bg-accent ${
+                        animate ? "animate-pulse" : "opacity-40"
+                    }`}
+                >
+                    {!animate && title && (
+                        <span className="sr-only">{title}</span>
+                    )}
+                </div>
+                <div
+                    className={`h-5 w-16 rounded bg-accent ${
+                        animate ? "animate-pulse" : "opacity-20"
+                    }`}
+                />
             </div>
 
             {/* Card grid placeholder */}
