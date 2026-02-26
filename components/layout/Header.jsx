@@ -139,12 +139,14 @@ export function Header() {
                         <Link
                             href="/movies"
                             className="block py-2 text-gray-100 hover:text-primary"
+                            onClick={() => setIsOpen(false)}
                         >
                             {t.movies}
                         </Link>
                         <Link
                             href="/shows"
                             className="block py-2 text-gray-100 hover:text-primary"
+                            onClick={() => setIsOpen(false)}
                         >
                             {t.shows}
                         </Link>
