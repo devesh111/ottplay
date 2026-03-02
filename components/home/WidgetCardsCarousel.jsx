@@ -12,12 +12,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 
 /**
- * NewReleasesCarousel — Client Component (interactive only).
+ * WidgetCardsCarousel — Client Component (interactive only).
  * Receives `items`, `widgetTitle`, and optional `seeAllUrl` as props.
  */
-export function NewReleasesCarousel({
+export function WidgetCardsCarousel({
     items = [],
-    widgetTitle = "New Releases",
+    widgetTitle = "",
     seeAllUrl = null,
 }) {
     const [carouselApi, setCarouselApi] = useState(null);

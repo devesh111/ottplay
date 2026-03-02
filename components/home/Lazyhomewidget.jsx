@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { fetchCarouselItems } from "@/lib/api/ottplay";
-import { NewReleasesCarousel } from "@/components/home/NewReleasesCarousel";
+import { WidgetCardsCarousel } from "@/components/home/WidgetCardsCarousel";
 import { ProviderCarousel } from "@/components/home/ProviderCarousel";
 
 /**
@@ -31,8 +31,7 @@ function buildSeeAllUrl(widget) {
  *
  * Supports all home widget template types:
  *  - "providers"      → ProviderCarousel
- *  - "new_releases"   → NewReleasesCarousel
- *  - everything else  → NewReleasesCarousel (generic card list)
+ *  - everything else  → WidgetCardsCarousel (generic card list)
  */
 export default function LazyHomeWidget({ widget }) {
     const ref = useRef(null);
@@ -78,7 +77,7 @@ export default function LazyHomeWidget({ widget }) {
             return <ProviderCarousel items={items} seeAllUrl={seeAllUrl} />;
         }
         return (
-            <NewReleasesCarousel
+            <WidgetCardsCarousel
                 items={items}
                 widgetTitle={widgetTitle}
                 seeAllUrl={seeAllUrl}
