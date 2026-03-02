@@ -9,6 +9,7 @@
     --color-header: var(--header);
     --color-footer: var(--footer);
     --color-border-bl: var(--border-bl);
+    --color-search: var(--search);
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-geist-mono);
     --color-sidebar-ring: var(--sidebar-ring);
@@ -41,7 +42,7 @@
     --color-card-foreground: var(--card-foreground);
     --color-card: var(--card);
     --color-section: var(--section);
-    --color-episode-card : var(--episode-card);
+    --color-episode-card: var(--episode-card);
     --radius-sm: calc(var(--radius) - 4px);
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);
@@ -90,8 +91,9 @@
     --section: #130726;
     --header: #130726;
     --border-bl: #382e4b;
-    --footer: #0e051e;  
+    --footer: #0e051e;
     --episode-card: #1c142c;
+    --search: #392557;
 }
 
 .light {
@@ -131,6 +133,7 @@
     --border-bl: #382e4b;
     --footer: #0e051e;
     --episode-card: #1c142c;
+    --search: #392557;
 }
 
 @layer base {
@@ -176,8 +179,8 @@ button {
 body {
     overflow-x: hidden;
 }
-.movie-details-poster-image::before, 
-.show-details-poster-image::before{
+.movie-details-poster-image::before,
+.show-details-poster-image::before {
     content: "";
     box-shadow: 3px 0 10px 10px #130726;
     width: 1px;
@@ -204,4 +207,25 @@ body {
 .video-js .vjs-big-play-button,
 .video-js .vjs-control-bar {
     display: none !important;
+}
+
+@layer utilities {
+    .search-scrollbar::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+    }
+
+    .search-scrollbar::-webkit-scrollbar-track {
+        border-radius: 100vh;
+        background: #2c2046;
+    }
+
+    .search-scrollbar::-webkit-scrollbar-thumb {
+        background: var(--primary);
+        border-radius: 100vh;
+    }
+
+    .search-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: var(--secondary);
+    }
 }

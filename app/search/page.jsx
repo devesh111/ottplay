@@ -69,7 +69,6 @@ export default function SearchPage() {
                         </Link>
                         <h1 className="text-2xl font-bold">Search Results</h1>
                     </div>
-                    <SearchAutocomplete />
                 </div>
             </div>
 

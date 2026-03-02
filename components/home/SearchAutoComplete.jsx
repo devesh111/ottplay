@@ -154,7 +154,7 @@ export function SearchAutocomplete() {
     const displayedResults = results;
 
     return (
-        <div className="w-full max-w-2xl mx-auto relative">
+        <div className="w-full max-w-lg mx-auto relative">
             {/* Search Input Field */}
             <div className="relative">
                 <div className="relative flex items-center">
@@ -167,7 +167,7 @@ export function SearchAutocomplete() {
                         onChange={handleInputChange}
                         onKeyDown={handleKeyDown}
                         onFocus={() => query && setIsOpen(true)}
-                        className="pl-10 pr-4 py-2 text-xs"
+                        className="pl-10 pr-4 py-2 text-xs dark:bg-search"
                     />
                     {isLoading && (
                         <Loader2 className="absolute right-3 w-5 h-5 text-muted-foreground animate-spin" />
@@ -194,7 +194,7 @@ export function SearchAutocomplete() {
                         ) : (
                             <>
                                 {/* Scrollable Results Area - Max 5 items visible */}
-                                <ScrollArea className="max-h-80 overflow-y-scroll">
+                                <ScrollArea className="max-h-80 overflow-y-scroll search-scrollbar">
                                     <div className="divide-y">
                                         {displayedResults.map(
                                             (result, index) => (
@@ -258,7 +258,7 @@ export function SearchAutocomplete() {
                                     <Button
                                         onClick={handleSearchSubmit}
                                         variant="outline"
-                                        className="w-full justify-center whitespace-break-spaces hover:text-white"
+                                        className="w-full justify-center whitespace-break-spaces hover:text-primary bg-search"
                                     >
                                         See all search results for "{query}"
                                     </Button>

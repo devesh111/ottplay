@@ -56,9 +56,9 @@ export function Header() {
     return (
         <header className="bg-header shadow-sm sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center h-16">
+                <div className="flex justify-between items-center h-16 gap-10">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center space-x-2">
+                    <Link href="/" className="flex items-center flex-initial">
                         <Image
                             src="https://images.ottplay.com/static/newImages/OTTplayWhiteLogo.svg"
                             width={10}
@@ -69,7 +69,7 @@ export function Header() {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <nav className="hidden md:flex items-center space-x-8">
+                    <nav className="hidden md:flex items-center space-x-8 flex-0">
                         <Link
                             href="/movies"
                             className="text-gray-100 hover:text-primary"
@@ -85,12 +85,12 @@ export function Header() {
                     </nav>
 
                     {/* Search Bar */}
-                    <div className="hidden md:flex">
+                    <div className="hidden md:flex flex-1">
                         <SearchAutocomplete />
                     </div>
 
                     {/* Auth Buttons */}
-                    <div className="md:flex items-center space-x-4">
+                    <div className="md:flex items-center flex-initial gap-4">
                         {/* Language Switcher */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
