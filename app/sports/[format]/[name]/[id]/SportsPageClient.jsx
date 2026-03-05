@@ -9,17 +9,21 @@ import parse from "html-react-parser";
 import DOMPurify from "dompurify";
 import { Button } from "@/components/ui/button";
 import { PlayIcon } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { getOptimizedImageUrl } from "@/lib/utils";
 
 function convertDateTime(dateTimeString) {
     return new Date(dateTimeString).toDateString();
 }
 
 export default function SportsPageClient({ sport }) {
+    const isMobile = useIsMobile();
     const sportFormat = ["Sports", sport.format].join(" • ");
     const certification = sport.certifications?.[0]?.certification;
     const sportLanguage = sport.primary_language?.name;
     const provider = sport.where_to_watch?.[0]?.provider;
     const sportPoster = sport.backdrops?.[0]?.url;
+    const optimizedPoster = getOptimizedImageUrl(sportPoster, isMobile ? "mobile" : "desktop");
 
     return (
         <main className="min-h-screen bg-background">
@@ -73,7 +77,7 @@ export default function SportsPageClient({ sport }) {
 
                     {/* Right */}
                     <div className="md:w-1/2 order-1 md:order-2 relative movie-details-poster-image">
-                        {sportPoster && <img src={sportPoster} alt={sport.name} className="w-full h-auto" />}
+                        {sportPoster && <img src={optimizedPoster ?? sportPoster} alt={sport.name} className="w-full h-auto" />}
                     </div>
                 </div>
             </section>

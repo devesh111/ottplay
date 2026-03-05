@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Search, Loader2 } from "lucide-react";
 import { fetchSearchContent } from "@/lib/api/ottplay";
+import { getOptimizedImageUrl } from "@/lib/utils";
 
 export function SearchAutocomplete() {
     const router = useRouter();
@@ -217,7 +218,7 @@ export function SearchAutocomplete() {
                                                         {result.image && (
                                                             <img
                                                                 src={
-                                                                    result.image
+                                                                    getOptimizedImageUrl(result.image, "mobile") ?? result.image
                                                                 }
                                                                 alt={
                                                                     result.title

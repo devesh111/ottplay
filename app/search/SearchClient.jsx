@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import Skeleton from "@/components/ui/skeleton";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { getOptimizedImageUrl } from "@/lib/utils";
 
 const LIMIT = 20;
 
@@ -57,6 +59,7 @@ export default function SearchClient({ query, initialItems, initialNextPage, ini
     const [initialLoading, setInitialLoading] = useState(false);
     const [fetchingMore, setFetchingMore] = useState(false);
     const [error, setError] = useState(null);
+    const isMobile = useIsMobile();
 
     const sentinelRef = useRef(null);
     const isFetchingRef = useRef(false);
@@ -200,7 +203,7 @@ export default function SearchClient({ query, initialItems, initialNextPage, ini
                             <Link href={result.url}>
                                 {result.image ? (
                                     <div className="relative overflow-hidden bg-muted h-64">
-                                        <img src={result.image} alt={result.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                                        <img src={getOptimizedImageUrl(result.image, isMobile ? "mobile" : "desktop") ?? result.image} alt={result.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                                     </div>
                                 ) : (
                                     <div className="w-full h-64 bg-muted flex items-center justify-center">

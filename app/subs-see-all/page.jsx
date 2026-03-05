@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { getOptimizedImageUrl } from "@/lib/utils";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -252,9 +253,10 @@ function SeeAllContent() {
                                     >
                                         {imageUrl ? (
                                             <Image
-                                                src={imageUrl}
+                                                src={getOptimizedImageUrl(imageUrl, "desktop") ?? imageUrl}
                                                 alt={title}
                                                 fill
+                                                sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, 20vw"
                                                 className="object-cover group-hover:scale-105 transition-transform duration-300"
                                                 loading={
                                                     index < 10

@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { ChevronDown, Play } from "lucide-react";
 import { fetchEpisodes } from "@/lib/api/ottplay";
+import { getOptimizedImageUrl } from "@/lib/utils";
 
 /**
  * Episodes — Client Component.
@@ -77,7 +78,7 @@ export default function Episodes({ seasonNumber, seoUrl, initialEpisodes, setIsO
                                 <div className="flex flex-col sm:flex-row items-center gap-4">
                                     <div className="flex-none">
                                         <img
-                                            src={episode.backdrop_url}
+                                            src={getOptimizedImageUrl(episode.backdrop_url, "mobile") ?? episode.backdrop_url}
                                             className="w-full sm:w-45 h-full sm:h-25.25 rounded-sm"
                                             alt={episode.name}
                                         />

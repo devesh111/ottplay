@@ -11,6 +11,8 @@ import DOMPurify from "dompurify";
 import { Button } from "@/components/ui/button";
 import { PlayIcon } from "lucide-react";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { getOptimizedImageUrl } from "@/lib/utils";
 
 const VIDEO_URL =
     "https://vz-7335a46e-2e0.b-cdn.net/594c2931-3911-4bc3-a7ee-a085f5050931/playlist.m3u8";
@@ -26,6 +28,7 @@ function convertDateTime(dateTimeString) {
 
 export default function MoviePageClient({ movie }) {
     const [isOpen, setIsOpen] = useState(false);
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         document.body.style.overflow = isOpen ? "hidden" : "";
@@ -41,6 +44,7 @@ export default function MoviePageClient({ movie }) {
         : primaryLanguage;
     const provider = movie.where_to_watch?.[0]?.provider;
     const moviePoster = movie.backdrops?.[0]?.url;
+    const optimizedPoster = getOptimizedImageUrl(moviePoster, isMobile ? "mobile" : "desktop");
 
     return (
         <>
@@ -112,7 +116,7 @@ export default function MoviePageClient({ movie }) {
 
                         {/* Right */}
                         <div className="md:w-1/2 order-1 md:order-2 relative movie-details-poster-image">
-                            {moviePoster && <img src={moviePoster} alt={movie.name} className="w-full h-auto" />}
+                            {moviePoster && <img src={optimizedPoster ?? moviePoster} alt={movie.name} className="w-full h-auto" />}
                         </div>
                     </div>
                 </section>

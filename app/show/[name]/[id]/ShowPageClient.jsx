@@ -17,6 +17,8 @@ import {
     SelectItem, SelectLabel, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { getOptimizedImageUrl } from "@/lib/utils";
 
 const VIDEO_URL =
     "https://vz-7335a46e-2e0.b-cdn.net/594c2931-3911-4bc3-a7ee-a085f5050931/playlist.m3u8";
@@ -30,6 +32,7 @@ export default function ShowPageClient({ show }) {
         show.latest_episode?.season_number ?? 1
     );
     const [isOpen, setIsOpen] = useState(false);
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         document.body.style.overflow = isOpen ? "hidden" : "";
@@ -48,6 +51,7 @@ export default function ShowPageClient({ show }) {
         ? `${seasons.length} Seasons • ${totalEpisodes} eps`
         : `${seasons.length} Season • ${totalEpisodes} eps`;
     const showPoster = show.backdrops?.[0]?.url;
+    const optimizedPoster = getOptimizedImageUrl(showPoster, isMobile ? "mobile" : "desktop");
 
     // seo_url is used to build the API call for Episodes
     const seoUrl = show.seo_url || "";
@@ -122,7 +126,7 @@ export default function ShowPageClient({ show }) {
 
                         {/* Right */}
                         <div className="md:w-1/2 order-1 md:order-2 relative show-details-poster-image">
-                            {showPoster && <img src={showPoster} alt={show.name} className="w-full h-auto" />}
+                            {showPoster && <img src={optimizedPoster ?? showPoster} alt={show.name} className="w-full h-auto" />}
                         </div>
                     </div>
                 </section>

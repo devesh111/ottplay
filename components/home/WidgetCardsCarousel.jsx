@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { getOptimizedImageUrl } from "@/lib/utils";
 import {
     Carousel,
     CarouselContent,
@@ -93,9 +94,10 @@ export function WidgetCardsCarousel({
                                                 >
                                                     {imageUrl ? (
                                                         <Image
-                                                            src={imageUrl}
+                                                            src={getOptimizedImageUrl(imageUrl, "desktop") ?? imageUrl}
                                                             alt={itemTitle}
                                                             fill
+                                                            sizes="(max-width: 640px) 33vw, (max-width: 768px) 33vw, 16vw"
                                                             className="object-cover group-hover:scale-105 transition-transform duration-300"
                                                             priority={
                                                                 index === 0

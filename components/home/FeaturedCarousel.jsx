@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { getOptimizedImageUrl } from "@/lib/utils";
 import {
     Carousel,
     CarouselContent,
@@ -96,9 +97,10 @@ const FeaturedCarousel = ({ items = [] }) => {
                                                 <div className="relative w-full" style={{ aspectRatio: "16/9" }}>
                                                     {imageUrl ? (
                                                         <Image
-                                                            src={imageUrl}
+                                                            src={getOptimizedImageUrl(imageUrl, "desktop") ?? imageUrl}
                                                             alt={itemTitle}
                                                             fill
+                                                            sizes="(max-width: 768px) 100vw, 33vw"
                                                             className="object-cover group-hover:scale-105 transition-transform duration-300"
                                                             priority={index === 0}
                                                         />
