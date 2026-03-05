@@ -12,7 +12,7 @@ const LoadingSkeleton = () => {
                         <section key={i}>
                             <div
                                 data-slot="skeleton"
-                                className="bg-accent animate-pulse rounded-md h-8 w-48 mb-6"
+                                className="bg-muted animate-pulse rounded-md h-8 w-48 mb-6"
                             ></div>
                             <Skeleton className="h-8 w-48 mb-6" />
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">

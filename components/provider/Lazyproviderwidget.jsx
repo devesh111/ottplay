@@ -102,7 +102,7 @@ function WidgetSkeleton({ title, animate = false }) {
             {/* Title + See All placeholder */}
             <div className="flex items-center justify-between mb-6">
                 <div
-                    className={`h-7 w-48 rounded-md bg-accent ${
+                    className={`h-7 w-48 rounded-md bg-muted ${
                         animate ? "animate-pulse" : "opacity-40"
                     }`}
                 >
@@ -111,7 +111,7 @@ function WidgetSkeleton({ title, animate = false }) {
                     )}
                 </div>
                 <div
-                    className={`h-5 w-16 rounded bg-accent ${
+                    className={`h-5 w-16 rounded bg-muted ${
                         animate ? "animate-pulse" : "opacity-20"
                     }`}
                 />
@@ -121,7 +121,7 @@ function WidgetSkeleton({ title, animate = false }) {
                 {[...Array(6)].map((_, i) => (
                     <div
                         key={i}
-                        className={`rounded-lg bg-accent ${
+                        className={`rounded-lg bg-muted ${
                             animate ? "animate-pulse" : "opacity-20"
                         }`}
                         style={{ aspectRatio: "2/3" }}
