@@ -98,7 +98,7 @@ export function WidgetCardsCarousel({
 
                                                             alt={itemTitle}
 
-                                                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                                            className="object-cover group-hover:scale-105 transition-transform duration-300 h-full"
 
                                                         />
                                                     ) : (
