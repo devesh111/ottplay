@@ -12,7 +12,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useApp } from "@/contexts/AppContext";
-import Image from "next/image";
+
 import { SearchAutocomplete } from "@/components/home/SearchAutoComplete";
 
 export function Header() {
@@ -59,10 +59,8 @@ export function Header() {
                 <div className="flex justify-between items-center h-16 gap-10">
                     {/* Logo */}
                     <Link href="/" className="flex items-center flex-initial">
-                        <Image
+                        <img
                             src="https://images.ottplay.com/static/newImages/OTTplayWhiteLogo.svg"
-                            width={10}
-                            height={10}
                             className="h-10 w-auto"
                             alt="Ottplay"
                         />

@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { getOptimizedImageUrl } from "@/lib/utils";
 import {
@@ -252,17 +251,11 @@ function SeeAllContent() {
                                         style={{ aspectRatio }}
                                     >
                                         {imageUrl ? (
-                                            <Image
+                                            <img
                                                 src={getOptimizedImageUrl(imageUrl, "desktop") ?? imageUrl}
                                                 alt={title}
-                                                fill
-                                                sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, 20vw"
-                                                className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                                loading={
-                                                    index < 10
-                                                        ? "eager"
-                                                        : "lazy"
-                                                }
+                                                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                                                loading={index < 10 ? "eager" : "lazy"}
                                             />
                                         ) : (
                                             <div className="w-full h-full bg-linear-to-br from-gray-700 to-gray-900 flex items-center justify-center">

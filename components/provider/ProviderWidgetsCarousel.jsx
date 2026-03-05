@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { getOptimizedImageUrl } from "@/lib/utils";
 import {
@@ -99,15 +98,14 @@ export function ProviderWidgetCarousel({
                                                     }}
                                                 >
                                                     {imageUrl ? (
-                                                        <Image
+                                                        <img
+
                                                             src={getOptimizedImageUrl(imageUrl, "desktop") ?? imageUrl}
+
                                                             alt={itemTitle}
-                                                            fill
-                                                            sizes="(max-width: 640px) 33vw, (max-width: 768px) 33vw, 16vw"
+
                                                             className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                                            priority={
-                                                                index === 0
-                                                            }
+
                                                         />
                                                     ) : (
                                                         <div className="w-full h-full bg-linear-to-br from-gray-700 to-gray-900 flex items-center justify-center">
