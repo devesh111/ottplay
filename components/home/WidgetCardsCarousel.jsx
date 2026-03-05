@@ -86,20 +86,21 @@ export function WidgetCardsCarousel({
                                         <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group h-full m-0 p-0">
                                             <Link href={seoUrl}>
                                                 <div
-                                                    className="relative w-full"
+                                                    className="relative w-full overflow-hidden"
                                                     style={{
                                                         aspectRatio: "2/3",
                                                     }}
                                                 >
                                                     {imageUrl ? (
                                                         <img
-
-                                                            src={getOptimizedImageUrl(imageUrl, "desktop") ?? imageUrl}
-
+                                                            src={
+                                                                getOptimizedImageUrl(
+                                                                    imageUrl,
+                                                                    "desktop",
+                                                                ) ?? imageUrl
+                                                            }
                                                             alt={itemTitle}
-
-                                                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-
+                                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                                         />
                                                     ) : (
                                                         <div className="w-full h-full bg-linear-to-br from-gray-700 to-gray-900 flex items-center justify-center">
