@@ -13,13 +13,23 @@ import { getOptimizedImageUrl } from "@/lib/utils";
  * Accepts `initialEpisodes` pre-fetched by the Server Component for the first
  * page/season so there is no loading flash on first render.
  * Subsequent "load more" and season changes fetch via /api/episodes.
+ *
+ * `sortBy` is derived from the show's `latest_episode` field in ShowPageClient:
+ *   - "desc"  when the show has a latest_episode (show newest episodes first)
+ *   - null    otherwise (show oldest first — param is omitted from the API call)
  */
-export default function Episodes({ seasonNumber, seoUrl, initialEpisodes, setIsOpen }) {
+export default function Episodes({
+    seasonNumber,
+    seoUrl,
+    sortBy,
+    initialEpisodes,
+    setIsOpen,
+}) {
     const [allEpisodes, setAllEpisodes] = useState(
-        initialEpisodes?.episodes ?? []
+        initialEpisodes?.episodes ?? [],
     );
     const [nextPageToFetch, setNextPageToFetch] = useState(
-        initialEpisodes?.nextPage ?? null
+        initialEpisodes?.nextPage ?? null,
     );
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -39,17 +49,21 @@ export default function Episodes({ seasonNumber, seoUrl, initialEpisodes, setIsO
         try {
             setIsLoading(true);
             setError(null);
-            const response = await fetchEpisodes({
+
+            // Only include sortBy in the request when it has a value
+            const params = {
                 seoUrl,
                 limit: 5,
                 seasonNumber,
                 custom: true,
-                sortBy: "desc",
                 error_version: 2,
                 page,
-            });
+                ...(sortBy ? { sortBy } : {}),
+            };
+
+            const response = await fetchEpisodes(params);
             setAllEpisodes((prev) =>
-                reset ? response.episodes : [...prev, ...response.episodes]
+                reset ? response.episodes : [...prev, ...response.episodes],
             );
             setNextPageToFetch(response.nextPage ?? null);
         } catch (err) {
@@ -64,7 +78,9 @@ export default function Episodes({ seasonNumber, seoUrl, initialEpisodes, setIsO
             <div className="max-w-7xl mx-auto mt-10">
                 {error && (
                     <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                        <p className="text-red-800 font-medium">Error: {error}</p>
+                        <p className="text-red-800 font-medium">
+                            Error: {error}
+                        </p>
                     </div>
                 )}
 
@@ -78,7 +94,12 @@ export default function Episodes({ seasonNumber, seoUrl, initialEpisodes, setIsO
                                 <div className="flex flex-col sm:flex-row items-center gap-4">
                                     <div className="flex-none">
                                         <img
-                                            src={getOptimizedImageUrl(episode.backdrop_url, "mobile") ?? episode.backdrop_url}
+                                            src={
+                                                getOptimizedImageUrl(
+                                                    episode.backdrop_url,
+                                                    "mobile",
+                                                ) ?? episode.backdrop_url
+                                            }
                                             className="w-full sm:w-45 h-full sm:h-25.25 rounded-sm"
                                             alt={episode.name}
                                         />
@@ -89,22 +110,27 @@ export default function Episodes({ seasonNumber, seoUrl, initialEpisodes, setIsO
                                                 {episode.name}
                                             </h3>
                                             <p className="text-sm mt-1">
-                                                Episode #{episode.episode_number} •{" "}
+                                                Episode #
+                                                {episode.episode_number} •{" "}
                                                 <span>
                                                     {new Date(
-                                                        episode.air_date
-                                                    ).toLocaleDateString("en-US", {
-                                                        year: "numeric",
-                                                        month: "short",
-                                                        day: "numeric",
-                                                    })}
+                                                        episode.air_date,
+                                                    ).toLocaleDateString(
+                                                        "en-US",
+                                                        {
+                                                            year: "numeric",
+                                                            month: "short",
+                                                            day: "numeric",
+                                                        },
+                                                    )}
                                                 </span>
                                             </p>
                                         </div>
                                         {episode.run_time && (
                                             <div className="text-sm">
                                                 <span className="font-medium">
-                                                    Duration: {episode.run_time} mins
+                                                    Duration: {episode.run_time}{" "}
+                                                    mins
                                                 </span>
                                             </div>
                                         )}
@@ -112,8 +138,9 @@ export default function Episodes({ seasonNumber, seoUrl, initialEpisodes, setIsO
                                 </div>
                                 <div className="space-y-3 text-sm text-left sm:text-right mb-3">
                                     <Button
-                                    onClick={()=>setIsOpen(true)}
-                                    className="text-white">
+                                        onClick={() => setIsOpen(true)}
+                                        className="text-white"
+                                    >
                                         <Play fill="white" />
                                         Play
                                     </Button>
@@ -143,7 +170,13 @@ export default function Episodes({ seasonNumber, seoUrl, initialEpisodes, setIsO
                             size="lg"
                             className="dark:border-primary text-primary hover:text-white px-8"
                         >
-                            {isLoading ? "Loading..." : <>Show More <ChevronDown /></>}
+                            {isLoading ? (
+                                "Loading..."
+                            ) : (
+                                <>
+                                    Show More <ChevronDown />
+                                </>
+                            )}
                         </Button>
                     </div>
                 )}

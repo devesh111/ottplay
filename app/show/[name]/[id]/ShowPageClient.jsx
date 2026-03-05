@@ -2,8 +2,12 @@
 
 import { useState, useEffect } from "react";
 import {
-    Breadcrumb, BreadcrumbItem, BreadcrumbLink,
-    BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator,
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 import parse from "html-react-parser";
@@ -13,8 +17,13 @@ import { Button } from "@/components/ui/button";
 import { PlayIcon } from "lucide-react";
 import Episodes from "@/components/content/Episodes";
 import {
-    Select, SelectContent, SelectGroup,
-    SelectItem, SelectLabel, SelectTrigger, SelectValue,
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -28,30 +37,53 @@ function convertDateTime(dateTimeString) {
 }
 
 export default function ShowPageClient({ show }) {
-    const [seasonNumber, setSeasonNumber] = useState(
-        show.latest_episode?.season_number ?? 1
-    );
     const [isOpen, setIsOpen] = useState(false);
     const isMobile = useIsMobile();
 
     useEffect(() => {
         document.body.style.overflow = isOpen ? "hidden" : "";
-        return () => { document.body.style.overflow = ""; };
+        return () => {
+            document.body.style.overflow = "";
+        };
     }, [isOpen]);
 
     const showGenres = show.genres?.map((x) => x.name).join(" • ");
     const certification = show.certifications?.[0]?.certification;
     const primaryLanguage = show.primary_language?.name;
     const otherLanguages = show.other_languages?.map((x) => x.name).join(" • ");
-    const showLanguages = otherLanguages ? `${primaryLanguage} • ${otherLanguages}` : primaryLanguage;
+    const showLanguages = otherLanguages
+        ? `${primaryLanguage} • ${otherLanguages}`
+        : primaryLanguage;
     const provider = show.where_to_watch?.[0]?.provider;
     const totalEpisodes = show.episodes?.[0]?.episodes_count;
     const seasons = show.seasons ?? [];
-    const noOfSeasons = seasons.length > 1
-        ? `${seasons.length} Seasons • ${totalEpisodes} eps`
-        : `${seasons.length} Season • ${totalEpisodes} eps`;
+    const noOfSeasons =
+        seasons.length > 1
+            ? `${seasons.length} Seasons • ${totalEpisodes} eps`
+            : `${seasons.length} Season • ${totalEpisodes} eps`;
     const showPoster = show.backdrops?.[0]?.url;
-    const optimizedPoster = getOptimizedImageUrl(showPoster, isMobile ? "mobile" : "desktop");
+    const optimizedPoster = getOptimizedImageUrl(
+        showPoster,
+        isMobile ? "mobile" : "desktop",
+    );
+
+    // Determine sort direction: desc for tv_shows, null for others
+    const isLatest = show.format === "tv_shows";
+    const sortBy = isLatest ? "desc" : null;
+
+    // Pick the correct default season based on the sort direction
+    const deriveInitialSeason = () => {
+        if (!seasons.length) return show.latest_episode?.season_number ?? 1;
+        if (isLatest) {
+            // latest first → use the last season in the array
+            return seasons[seasons.length - 1]?.season_number ?? 1;
+        } else {
+            // oldest first → use the first season in the array
+            return seasons[0]?.season_number ?? 1;
+        }
+    };
+
+    const [seasonNumber, setSeasonNumber] = useState(deriveInitialSeason);
 
     // seo_url is used to build the API call for Episodes
     const seoUrl = show.seo_url || "";
@@ -59,7 +91,10 @@ export default function ShowPageClient({ show }) {
     return (
         <>
             {isOpen && (
-                <div className="fixed inset-0 z-50 bg-black" style={{ touchAction: "none" }}>
+                <div
+                    className="fixed inset-0 z-50 bg-black"
+                    style={{ touchAction: "none" }}
+                >
                     <VideoPlayer
                         videoUrl={VIDEO_URL}
                         title={show.name}
@@ -73,11 +108,19 @@ export default function ShowPageClient({ show }) {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
                     <Breadcrumb>
                         <BreadcrumbList>
-                            <BreadcrumbItem><BreadcrumbLink href="/">Home</BreadcrumbLink></BreadcrumbItem>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                            </BreadcrumbItem>
                             <BreadcrumbSeparator />
-                            <BreadcrumbItem><BreadcrumbLink href="/shows">Shows</BreadcrumbLink></BreadcrumbItem>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href="/shows">
+                                    Shows
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
                             <BreadcrumbSeparator />
-                            <BreadcrumbItem><BreadcrumbPage>{show.name}</BreadcrumbPage></BreadcrumbItem>
+                            <BreadcrumbItem>
+                                <BreadcrumbPage>{show.name}</BreadcrumbPage>
+                            </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
                 </div>
@@ -86,34 +129,79 @@ export default function ShowPageClient({ show }) {
                     <div className="flex flex-col md:flex-row gap-5 md:gap-20">
                         {/* Left */}
                         <div className="w-full md:w-1/2 order-2 md:order-1">
-                            <h1 className="text-3xl text-white font-semibold mb-2">{show.name}</h1>
-                            {showGenres && <p className="text-sm tracking-wide">{showGenres}</p>}
+                            <h1 className="text-3xl text-white font-semibold mb-2">
+                                {show.name}
+                            </h1>
+                            {showGenres && (
+                                <p className="text-sm tracking-wide">
+                                    {showGenres}
+                                </p>
+                            )}
 
                             <div className="flex gap-2 max-w-lg mt-3 items-center justify-start text-center">
                                 {provider && (
                                     <div className="rounded-md text-center">
-                                        <Link href={`/ott-platform/${provider.seourl}`}>
-                                            <img src={provider.icon_url} alt={provider.name} className="w-10 rounded-md mx-auto" />
+                                        <Link
+                                            href={`/ott-platform/${provider.seourl}`}
+                                        >
+                                            <img
+                                                src={provider.icon_url}
+                                                alt={provider.name}
+                                                className="w-10 rounded-md mx-auto"
+                                            />
                                         </Link>
                                     </div>
                                 )}
                                 <div className="border border-border-bl p-2 flex gap-1 items-center rounded-md">
-                                    <span className="text-lg text-white font-bold">{show.ottplay_rating} </span>
-                                    <span className="text-xs font-bold leading-tight tracking-wide">OTTPlay Rating</span>
+                                    <span className="text-lg text-white font-bold">
+                                        {show.ottplay_rating}{" "}
+                                    </span>
+                                    <span className="text-xs font-bold leading-tight tracking-wide">
+                                        OTTPlay Rating
+                                    </span>
                                 </div>
-                                <div className="border border-border-bl p-2 font-bold text-sm rounded-md">{show.release_year}</div>
-                                {certification && <div className="border border-border-bl p-2 text-xs font-bold rounded-md">{certification}</div>}
-                                <div className="border border-border-bl p-2 text-xs font-bold rounded-md">{noOfSeasons}</div>
+                                <div className="border border-border-bl p-2 font-bold text-sm rounded-md">
+                                    {show.release_year}
+                                </div>
+                                {certification && (
+                                    <div className="border border-border-bl p-2 text-xs font-bold rounded-md">
+                                        {certification}
+                                    </div>
+                                )}
+                                <div className="border border-border-bl p-2 text-xs font-bold rounded-md">
+                                    {noOfSeasons}
+                                </div>
                             </div>
 
                             <div className="text-sm tracking-wide mt-5 mb-5 leading-relaxed">
-                                {showLanguages && <p><strong>Languages: </strong>{showLanguages}</p>}
-                                {show.release_date && <p><strong>Release Date: </strong>{convertDateTime(show.release_date)}</p>}
-                                {show.onboarding_updated_on && <p><strong>OTT Release Date: </strong>{convertDateTime(show.onboarding_updated_on)}</p>}
+                                {showLanguages && (
+                                    <p>
+                                        <strong>Languages: </strong>
+                                        {showLanguages}
+                                    </p>
+                                )}
+                                {show.release_date && (
+                                    <p>
+                                        <strong>Release Date: </strong>
+                                        {convertDateTime(show.release_date)}
+                                    </p>
+                                )}
+                                {show.onboarding_updated_on && (
+                                    <p>
+                                        <strong>OTT Release Date: </strong>
+                                        {convertDateTime(
+                                            show.onboarding_updated_on,
+                                        )}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="tracking-wide mt-5 text-md text-white">
-                                {parse(DOMPurify.sanitize(show.full_synopsis ?? ""))}
+                                {parse(
+                                    DOMPurify.sanitize(
+                                        show.full_synopsis ?? "",
+                                    ),
+                                )}
                             </div>
 
                             <Button
@@ -126,7 +214,13 @@ export default function ShowPageClient({ show }) {
 
                         {/* Right */}
                         <div className="md:w-1/2 order-1 md:order-2 relative show-details-poster-image">
-                            {showPoster && <img src={optimizedPoster ?? showPoster} alt={show.name} className="w-full h-auto" />}
+                            {showPoster && (
+                                <img
+                                    src={optimizedPoster ?? showPoster}
+                                    alt={show.name}
+                                    className="w-full h-auto"
+                                />
+                            )}
                         </div>
                     </div>
                 </section>
@@ -146,7 +240,10 @@ export default function ShowPageClient({ show }) {
                                 <SelectGroup>
                                     <SelectLabel>Seasons</SelectLabel>
                                     {seasons.map((season, index) => (
-                                        <SelectItem key={index} value={String(season.season_number)}>
+                                        <SelectItem
+                                            key={index}
+                                            value={String(season.season_number)}
+                                        >
                                             Season {season.season_number}
                                         </SelectItem>
                                     ))}
@@ -158,6 +255,7 @@ export default function ShowPageClient({ show }) {
                         <Episodes
                             seasonNumber={seasonNumber}
                             seoUrl={seoUrl}
+                            sortBy={sortBy}
                             setIsOpen={setIsOpen}
                         />
                     )}
