@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { getOptimizedVerticalImageUrl } from "@/lib/utils";
+import { getOptimizedVerticalImage } from "@/lib/utils";
 import {
     Carousel,
     CarouselContent,
@@ -94,7 +94,7 @@ export function WidgetCardsCarousel({
                                                     {imageUrl ? (
                                                         <img
                                                             src={
-                                                                getOptimizedVerticalImageUrl(
+                                                                getOptimizedVerticalImage(
                                                                     imageUrl,
                                                                     "desktop",
                                                                 ) ?? imageUrl
