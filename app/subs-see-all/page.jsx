@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { getOptimizedImageUrl } from "@/lib/utils";
+import { getOptimizedVerticalImageUrl } from "@/lib/utils";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -252,7 +252,7 @@ function SeeAllContent() {
                                     >
                                         {imageUrl ? (
                                             <img
-                                                src={getOptimizedImageUrl(imageUrl, "desktop") ?? imageUrl}
+                                                src={getOptimizedVerticalImageUrl(imageUrl, "desktop") ?? imageUrl}
                                                 alt={title}
                                                 className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
                                                 loading={index < 10 ? "eager" : "lazy"}

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { getOptimizedImageUrl } from "@/lib/utils";
+import { getOptimizedVerticalImageUrl } from "@/lib/utils";
 import {
     Carousel,
     CarouselContent,
@@ -100,7 +100,7 @@ export function ProviderWidgetCarousel({
                                                     {imageUrl ? (
                                                         <img
                                                             src={
-                                                                getOptimizedImageUrl(
+                                                                getOptimizedVerticalImageUrl(
                                                                     imageUrl,
                                                                     "desktop",
                                                                 ) ?? imageUrl

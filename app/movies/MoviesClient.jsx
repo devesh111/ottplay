@@ -12,7 +12,7 @@ import Link from "next/link";
 import Skeleton from "@/components/ui/skeleton";
 import { Loader2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { getOptimizedImageUrl } from "@/lib/utils";
+import { getOptimizedVerticalImageUrl } from "@/lib/utils";
 
 const LIMIT = 20;
 
@@ -124,7 +124,7 @@ export default function MoviesClient({ initialItems, initialNextPage, initialTot
                                 <Link href={`movie/${result.url}`}>
                                     {result.image ? (
                                         <div className="relative overflow-hidden bg-muted h-64">
-                                            <img src={getOptimizedImageUrl(result.image, isMobile ? "mobile" : "desktop") ?? result.image} alt={result.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                                            <img src={getOptimizedVerticalImageUrl(result.image, isMobile ? "mobile" : "desktop") ?? result.image} alt={result.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                                         </div>
                                     ) : (
                                         <div className="w-full h-64 bg-muted flex items-center justify-center">

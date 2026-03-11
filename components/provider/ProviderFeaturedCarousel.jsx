@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getOptimizedImageUrl } from "@/lib/utils";
+import { getOptimizedHorizontalImageUrl } from "@/lib/utils";
 import {
     Carousel,
     CarouselContent,
@@ -96,7 +96,7 @@ const ProviderFeaturedCarousel = ({ items = [] }) => {
                                                     {imageUrl ? (
                                                         <img
 
-                                                            src={getOptimizedImageUrl(imageUrl, "desktop") ?? imageUrl}
+                                                            src={getOptimizedHorizontalImageUrl(imageUrl, "desktop") ?? imageUrl}
 
                                                             alt={itemTitle}
 
